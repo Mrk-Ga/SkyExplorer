@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -24,6 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.unit.dp
+import com.example.skyexplorer.components.BackwardButton
+import com.example.skyexplorer.components.ForwardButton
 
 @Composable
 fun SkyMapScreen(
@@ -32,28 +35,40 @@ fun SkyMapScreen(
     onNavigateToConstellations: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    Scaffold(
+        bottomBar = {
+            Row(
+                modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
 
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                BackwardButton(onClick = {
+                    viewModel.handleIntent(SkyMapIntent.NavigateToCamera)
+                        ?.let { onNavigateToCamera() }
+                }
+                )
 
+                ForwardButton(onClick = {
+                    viewModel.handleIntent(SkyMapIntent.NavigateToConstellations)
+                        ?.let { onNavigateToConstellations() }
+                })
+            }
+        }
+        ){
+        innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+            ){
+                Text("SKY MAP", modifier = Modifier.padding(16.dp))
+        }
 
-    OutlinedIconButton(onClick = {
-        viewModel.handleIntent(SkyMapIntent.NavigateToCamera)?.let { onNavigateToCamera() }
-    })
-    {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Camera"
-        )
     }
-    OutlinedIconButton(onClick = {
-        viewModel.handleIntent(SkyMapIntent.NavigateToConstellations)?.let { onNavigateToConstellations() }
-    })
-    {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-            contentDescription = "Constellations"
-        )
-    }
-}
+
+
+
+
+
 }
 
