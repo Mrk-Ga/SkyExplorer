@@ -26,7 +26,7 @@ fun CameraScreen(
                 modifier = Modifier
                     .padding(20.dp)
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,  // 👈 Ustawienie po prawej stronie
+                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ){
                 ForwardButton { onGoBack()}

@@ -1,6 +1,7 @@
 package com.example.skyexplorer
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,13 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     //AppNavigation()
+                    try {
+                        val list = assets.list("")?.toList()
+                        Log.d("ASSETS", "Zawartość assets: $list")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
                     val navController = rememberNavController()
                     AppNavHost(navController)
                 }
@@ -31,51 +39,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-/*
-@Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
-
-    NavHost(
-        navController = navController,
-        startDestination = "home"
-    ) {
-        composable("home") { HomeScreen(navController) }
-        composable("second") { SecondScreen(navController) }
-    }
-}
-
-@Composable
-fun HomeScreen(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("To jest ekran główny", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = { navController.navigate("second") }) {
-            Text("Przejdź do drugiego ekranu")
-        }
-    }
-}
-
-@Composable
-fun SecondScreen(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("To jest drugi ekran", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Wróć")
-        }
-    }
-}
-*/

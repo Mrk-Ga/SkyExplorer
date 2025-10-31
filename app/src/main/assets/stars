@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "name": "Sirius",
+    "ra": 101.2875,
+    "dec": -16.7161,
+    "magnitude": -1.46
+  },
+  {
+    "id": 2,
+    "name": "Betelgeuse",
+    "ra": 88.7929,
+    "dec": 7.4071,
+    "magnitude": 0.42
+  },
+  {
+    "id": 3,
+    "name": "Rigel",
+    "ra": 78.6345,
+    "dec": -8.2016,
+    "magnitude": 0.13
+  },
+  {
+    "id": 4,
+    "name": "Bellatrix",
+    "ra": 81.2828,
+    "dec": 6.3497,
+    "magnitude": 1.64
+  },
+  {
+    "id": 5,
+    "name": "Mintaka",
+    "ra": 83.0017,
+    "dec": -0.2991,
+    "magnitude": 2.23
+  },
+  {
+    "id": 6,
+    "name": "Alnitak",
+    "ra": 85.1897,
+    "dec": -1.9426,
+    "magnitude": 1.74
+  },
+  {
+    "id": 7,
+    "name": "Alnilam",
+    "ra": 84.0533,
+    "dec": -1.2019,
+    "magnitude": 1.69
+  }
+]

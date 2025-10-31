@@ -2,6 +2,8 @@ package com.example.skyexplorer
 
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -13,6 +15,7 @@ import com.example.skyexplorer.constellations.ConstellationsScreen
 import com.example.skyexplorer.constellations.ConstellationsViewModel
 import com.example.skyexplorer.skymapscreen.*
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("ViewModelConstructorInComposable")
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -23,7 +26,7 @@ fun AppNavHost(navController: NavHostController) {
             SkyMapScreen(
                 viewModel = skyMapViewModel,
                 onNavigateToCamera = { navController.navigate("camera") },
-                onNavigateToConstellations = { navController.navigate("constellations") }
+                onNavigateToConstellations = { navController.navigate("assets/constellations") }
             )
         }
 
@@ -35,7 +38,7 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
-        composable("constellations"){
+        composable("assets/constellations"){
             val constellationsViewModel: ConstellationsViewModel = viewModel()
             ConstellationsScreen(
                 viewModel = constellationsViewModel,
