@@ -46,10 +46,10 @@ fun SkyMapView(
                 val s = stars.find { it.id == startId }
                 val e = stars.find { it.id == endId }
                 if (s != null && e != null) {
-                    val x1 = (centerX + (s.azimuth / 180.0 * centerX).toFloat()) * scale + offsetX
-                    val y1 = (centerY - (s.altitude / 90.0 * centerY).toFloat()) * scale + offsetY
-                    val x2 = (centerX + (e.azimuth / 180.0 * centerX).toFloat()) * scale + offsetX
-                    val y2 = (centerY - (e.altitude / 90.0 * centerY).toFloat()) * scale + offsetY
+                    val x1 = (centerX + (s.az / 180.0 * centerX).toFloat()) * scale + offsetX
+                    val y1 = (centerY - (s.alt / 90.0 * centerY).toFloat()) * scale + offsetY
+                    val x2 = (centerX + (e.az / 180.0 * centerX).toFloat()) * scale + offsetX
+                    val y2 = (centerY - (e.alt / 90.0 * centerY).toFloat()) * scale + offsetY
 
                     drawLine(
                         color = Color.Gray,
@@ -63,8 +63,8 @@ fun SkyMapView(
 
         // Rysuj gwiazdy
         stars.forEach { star ->
-            val x = (centerX + (star.azimuth / 180.0 * centerX).toFloat()) * scale + offsetX
-            val y = (centerY - (star.altitude / 90.0 * centerY).toFloat()) * scale + offsetY
+            val x = (centerX + (star.az / 180.0 * centerX).toFloat()) * scale + offsetX
+            val y = (centerY - (star.alt / 90.0 * centerY).toFloat()) * scale + offsetY
 
             val radius = (6f - star.magnitude).coerceAtLeast(1.0) * scale
             drawCircle(

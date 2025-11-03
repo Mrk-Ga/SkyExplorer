@@ -85,15 +85,8 @@ fun SkyMapScreen(
                     .fillMaxSize()
             ){
                 Text("SKY MAP", modifier = Modifier.padding(16.dp))
-                /*val stars = remember {
+                val stars = remember {
                     viewModel.loadStars(context)
-                }*/
-                // uproszczenie do rysowania gwiazd
-                val stars = viewModel.loadStars(context).mapIndexed { index, star ->
-                    star.copy(
-                        azimuth = (index * 45.0) % 360.0, // rozkład co 45 stopni
-                        altitude = (30 + (index * 10) % 60).toDouble() // wysokość 30–90°
-                    )
                 }
                 val constellations = remember {
                     viewModel.loadConstellations(context)
