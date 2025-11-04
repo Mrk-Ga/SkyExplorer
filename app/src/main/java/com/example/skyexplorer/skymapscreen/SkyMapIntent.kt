@@ -8,10 +8,6 @@ sealed class SkyMapIntent{
 
     object RequestNavigationPermission: SkyMapIntent()
 
-    //class LoadStars: SkyMapIntent()
-    //class LoadConstellations: SkyMapIntent()
-    data class UpdateLocation(val lat: Double, val lon: Double) : SkyMapIntent()
-
 }
 
 data class SkyMapUiState(

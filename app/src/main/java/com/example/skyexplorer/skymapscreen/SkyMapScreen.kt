@@ -3,6 +3,7 @@ package com.example.skyexplorer.skymapscreen
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.webkit.WebView
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.gestures.snapping.SnapPosition
@@ -52,8 +53,6 @@ fun SkyMapScreen(
     onNavigateToConstellations: () -> Unit
 ) {
     val context = LocalContext.current
-    val state by viewModel.state.collectAsState()
-
 
 
     Scaffold(
@@ -85,49 +84,17 @@ fun SkyMapScreen(
                     .fillMaxSize()
             ){
                 Text("SKY MAP", modifier = Modifier.padding(16.dp))
+
                 val stars = remember {
-                    viewModel.loadStars(context)
+                    context.assets.open("stars.json")
+                        .bufferedReader()
+                        .use { it.readText() }
+                        .replace("NaN", "null") // Dodaj tę linię, aby zamienić NaN na null
                 }
-                val constellations = remember {
-                    viewModel.loadConstellations(context)
-                }
-
-                SkyMapView(stars, constellations)
-
+                StarMap(stars)
         }
 
     }
-    /*
-
-    val uiState by viewModel.uiState.collectAsState()
-    val hasPermission = uiState.hasPermission
-    val webUrl = uiState.webUrl
-
-    if (!hasPermission) {
-        // Użytkownik nie dał jeszcze zgody – wyślij intencję
-        viewModel.handleIntent(SkyMapIntent.RequestNavigationPermission)
-    } else {
-        // Mapa nieba
-        AndroidView(factory = {
-            WebView(it).apply {
-                settings.javaScriptEnabled = true
-                settings.domStorageEnabled = true
-                loadUrl(webUrl)
-            }
-        }, update = {
-            it.loadUrl(webUrl)
-        })
-    }
-
-    // Efekt pobierania lokalizacji
-    LaunchedEffect(Unit) {
-        viewModel.fetchCurrentLocation(context) { lat, lon ->
-            val time = java.time.ZonedDateTime.now(java.time.ZoneOffset.UTC)
-                .toString().substringBeforeLast("[")
-            val webUrlLocation = "https://stellarium-web.org/?lat=$lat&lon=$lon&date=$time&fov=100"
-        }
-    }
-    */
 
 }
 
