@@ -1,7 +1,9 @@
 package com.example.skyexplorer.skymapscreen
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import android.webkit.WebView
@@ -37,6 +39,7 @@ import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skyexplorer.components.BackwardButton
@@ -46,6 +49,7 @@ import com.example.skyexplorer.components.InfoButton
 
 @SuppressLint("SetJavaScriptEnabled", "RememberReturnType")
 @RequiresApi(Build.VERSION_CODES.O)
+@androidx.annotation.RequiresPermission(allOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION])
 @Composable
 fun SkyMapScreen(
     viewModel: SkyMapViewModel,
@@ -53,6 +57,24 @@ fun SkyMapScreen(
     onNavigateToConstellations: () -> Unit
 ) {
     val context = LocalContext.current
+
+    val permissionFine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+    val permissionCoarse = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+
+    if (permissionFine != PackageManager.PERMISSION_GRANTED &&
+        permissionCoarse != PackageManager.PERMISSION_GRANTED) {
+        Text("⚠️ Brak uprawnień lokalizacji")
+        return
+    }
+    //var stars by remember { mutableStateOf<List<Star>>(emptyList()) }
+    val stars by viewModel.stars.collectAsState()
+    LaunchedEffect(Unit) {
+        // uruchamiamy korutynę w Compose
+        Log.d("DEBUG", "LaunchedEffect start – uruchamiam viewModel.loadStars()")
+        viewModel.loadStars()
+    }
+
+    //val location = viewModel.getLocalizationSuspend()
 
 
     Scaffold(
@@ -82,16 +104,30 @@ fun SkyMapScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
-            ){
+            )  {
                 Text("SKY MAP", modifier = Modifier.padding(16.dp))
-
+/*
                 val stars = remember {
                     context.assets.open("stars.json")
                         .bufferedReader()
                         .use { it.readText() }
                         .replace("NaN", "null") // Dodaj tę linię, aby zamienić NaN na null
                 }
-                StarMap(stars)
+
+ */
+                //location?.let {
+
+
+
+
+
+                if (stars.isEmpty()) {
+                    Text("Wczytywanie nieba...")
+                } else {
+                    StarMap(stars) // np. Twój Canvas z rysowaniem
+                }
+                //}
+
         }
 
     }
