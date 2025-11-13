@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    //alias(libs.plugins.google.services)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0" // lub taka sama wersja jak Kotlin
 }
 
@@ -55,6 +56,9 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.ui)
+    implementation(libs.firebase.storage)
+    implementation(libs.androidx.compose.runtime.saved.instance.state)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -75,4 +79,40 @@ dependencies {
 
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+
+    // CameraX core
+    implementation("androidx.camera:camera-core:1.4.0")
+    implementation("androidx.camera:camera-camera2:1.4.0")
+    implementation("androidx.camera:camera-lifecycle:1.4.0")
+
+// Preview View
+    implementation("androidx.camera:camera-view:1.4.0")
+
+// Jetpack Compose interop
+    implementation("androidx.compose.ui:ui:1.7.0")
+    implementation("androidx.compose.foundation:foundation:1.7.0")
+
+// Permission handling (recommended)
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0")) // Check for the latest version
+
+    // Your other Firebase dependencies, but WITHOUT versions
+    implementation("com.google.firebase:firebase-crashlytics-buildtools") // Example
+
+    implementation(platform(libs.firebase.bom))
+
+    // Use the main module
+    //implementation(libs.firebase.common)
+    implementation(libs.firebase.crashlytics.buildtools)
+
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+
+
+
+
 }

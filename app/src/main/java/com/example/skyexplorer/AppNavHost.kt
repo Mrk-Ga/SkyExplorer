@@ -17,11 +17,12 @@ import com.example.skyexplorer.skymapscreen.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("ViewModelConstructorInComposable")
+@androidx.annotation.RequiresPermission(allOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION])
 @Composable
 fun AppNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "skymap") {
 
-        composable("skymap") {
+        composable("skymap")  {
             val skyMapViewModel: SkyMapViewModel = viewModel()
             SkyMapScreen(
                 viewModel = skyMapViewModel,
@@ -29,6 +30,7 @@ fun AppNavHost(navController: NavHostController) {
                 onNavigateToConstellations = { navController.navigate("assets/constellations") }
             )
         }
+
 
         composable("camera") {
             val cameraViewModel: CameraViewModel = viewModel()

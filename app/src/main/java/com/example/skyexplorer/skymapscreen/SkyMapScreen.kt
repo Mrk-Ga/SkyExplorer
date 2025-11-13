@@ -66,16 +66,12 @@ fun SkyMapScreen(
         Text("⚠️ Brak uprawnień lokalizacji")
         return
     }
-    //var stars by remember { mutableStateOf<List<Star>>(emptyList()) }
     val stars by viewModel.stars.collectAsState()
     LaunchedEffect(Unit) {
         // uruchamiamy korutynę w Compose
         Log.d("DEBUG", "LaunchedEffect start – uruchamiam viewModel.loadStars()")
         viewModel.loadStars()
     }
-
-    //val location = viewModel.getLocalizationSuspend()
-
 
     Scaffold(
         bottomBar = {
@@ -106,27 +102,15 @@ fun SkyMapScreen(
                     .fillMaxSize()
             )  {
                 Text("SKY MAP", modifier = Modifier.padding(16.dp))
-/*
-                val stars = remember {
-                    context.assets.open("stars.json")
-                        .bufferedReader()
-                        .use { it.readText() }
-                        .replace("NaN", "null") // Dodaj tę linię, aby zamienić NaN na null
-                }
-
- */
-                //location?.let {
-
-
 
 
 
                 if (stars.isEmpty()) {
                     Text("Wczytywanie nieba...")
                 } else {
-                    StarMap(stars) // np. Twój Canvas z rysowaniem
+                    StarMap(stars)
                 }
-                //}
+
 
         }
 

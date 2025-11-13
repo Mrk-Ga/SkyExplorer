@@ -29,7 +29,6 @@ fun ConstellationsScreen(
     viewModel: ConstellationsViewModel,
     onGoBack: () -> Unit
 ){
-    val state by viewModel.state.collectAsState()
 
     Scaffold(
         bottomBar = {
