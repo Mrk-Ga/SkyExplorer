@@ -2,7 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    //alias(libs.plugins.google.services)
+
+    id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0" // lub taka sama wersja jak Kotlin
 }
 
@@ -54,11 +55,8 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.play.services.location)
     implementation(libs.androidx.room.ktx)
-    implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.ui)
-    implementation(libs.firebase.storage)
     implementation(libs.androidx.compose.runtime.saved.instance.state)
-    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -96,21 +94,18 @@ dependencies {
 // Permission handling (recommended)
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
 
-    implementation(platform("com.google.firebase:firebase-bom:34.5.0")) // Check for the latest version
 
-    // Your other Firebase dependencies, but WITHOUT versions
-    implementation("com.google.firebase:firebase-crashlytics-buildtools") // Example
+    implementation(libs.androidx.room.ktx)
+    val roomVersion = "2.6.1"
 
-    implementation(platform(libs.firebase.bom))
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
-    // Use the main module
-    //implementation(libs.firebase.common)
-    implementation(libs.firebase.crashlytics.buildtools)
+    ksp("androidx.room:room-compiler:$roomVersion")
 
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+
 
 
 

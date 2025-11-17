@@ -10,17 +10,14 @@ activityCompose = "1.11.0"
 composeBom = "2024.09.00"
 navigationCompose = "2.8.3"
 playServicesLocation = "21.3.0"
-roomKtx = "2.8.3"
+roomKtx = "3.0.0-alpha01"
+roomVersion = "2.6.1"
 firebaseCrashlyticsBuildtools = "3.0.6"
 ui = "1.9.4"
 uiGraphics = "1.9.4"
-firebaseBom = "34.5.0"
-firebaseCommonKtx = "22.0.1"
 googleServices = "4.4.4"
-firebaseCrashlyticsPlugin = "3.0.6"
-firebaseStorage = "22.0.1"
 runtimeSavedInstanceState = "1.0.0-alpha11"
-firebaseDatabase = "22.0.1"
+ksp = "2.0.21-1.0.21"
 
 
 [libraries]
@@ -41,19 +38,18 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
-firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+#androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "34.5.0" } # Use the latest version
-
-firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common", version.ref = "firebaseCommonKtx" }
-firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 androidx-compose-runtime-saved-instance-state = { group = "androidx.compose.runtime", name = "runtime-saved-instance-state", version.ref = "runtimeSavedInstanceState" }
-firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
+
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

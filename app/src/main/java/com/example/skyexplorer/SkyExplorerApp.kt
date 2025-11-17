@@ -2,12 +2,16 @@ package com.example.skyexplorer
 
 
 import android.app.Application
-import com.google.firebase.FirebaseApp
+import com.example.skyexplorer.camera.LocalRepository
 
 class SkyExplorerApp : Application() {
+
+    lateinit var cameraRepository: LocalRepository
+        private set
+
     override fun onCreate() {
         super.onCreate()
-        //Firebase initialization - only once at start of code
-        FirebaseApp.initializeApp(this)
+
+        cameraRepository = LocalRepository(this)
     }
 }

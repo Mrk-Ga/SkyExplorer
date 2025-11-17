@@ -27,7 +27,8 @@ import com.example.skyexplorer.components.ForwardButton
 @Composable
 fun ConstellationsScreen(
     viewModel: ConstellationsViewModel,
-    onGoBack: () -> Unit
+    onGoBack: () -> Unit,
+    onGoToPhotoGallery: () -> Unit
 ){
 
     Scaffold(
@@ -38,6 +39,9 @@ fun ConstellationsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 BackwardButton { onGoBack() }
+                ForwardButton {
+                    onGoToPhotoGallery()
+                }
             }
         }
     ) { innerPadding ->

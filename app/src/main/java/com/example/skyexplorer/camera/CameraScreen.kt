@@ -40,7 +40,8 @@ fun CameraScreen(
         Box(modifier = Modifier.fillMaxSize()) {
 
             //compose with camera screen and photo button
-            CameraPreview { //uri -> viewModel.uploadPhoto(uri)
+            CameraPreview { uri ->
+                viewModel.savePhoto(uri)
             }
 
             //row with "go to home screen" button
