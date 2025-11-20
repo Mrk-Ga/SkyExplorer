@@ -2,8 +2,8 @@ package com.example.skyexplorer.camera
 
 
 import android.net.Uri
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+//import com.google.firebase.firestore.FirebaseFirestore
+//import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 
 
@@ -17,10 +17,11 @@ data class PhotoData(
 //database class
 class FirebaseRepository {
 
-    private val storage = FirebaseStorage.getInstance()
-    private val db = FirebaseFirestore.getInstance()
+    //private val storage = FirebaseStorage.getInstance()
+    //private val db = FirebaseFirestore.getInstance()
 
     //function to upload photo to firebase
+    /*
     suspend fun uploadPhoto(uri: Uri): Boolean {
         return try {
             val ref = storage.reference.child("photos/${System.currentTimeMillis()}.jpg")
@@ -37,4 +38,6 @@ class FirebaseRepository {
             false
         }
     }
+
+     */
 }

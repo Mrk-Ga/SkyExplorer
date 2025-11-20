@@ -2,10 +2,9 @@ package com.example.skyexplorer.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val StarBlue = Color(0xFF1E2A78)
+val StarLightBlue = Color(0xFF4A5BB1)
+val StarDark = Color(0xFF0D0F1F)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val TextPrimary = Color.White
+val TextSecondary = Color(0xFFB0B7D3)

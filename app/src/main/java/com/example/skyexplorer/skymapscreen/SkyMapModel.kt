@@ -16,12 +16,14 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class SkyMapModel(
+    val context: Context
     //private val api: << połączenie z bazą danych
 ){
 
     @SuppressLint("MissingPermission")
     suspend fun getLocalizationSuspend(application: Application): Pair<Double, Double>? = suspendCoroutine { cont ->
-        val context = getApplication<Application>().applicationContext
+        //val context = getApplication<Application>().applicationContext
+        val context = application.applicationContext
         val fused = LocationServices.getFusedLocationProviderClient(context)
 
         Log.d("LOCATION", "⏳ Pobieranie lokalizacji (try: current → last → updates)")
