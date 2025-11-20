@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -34,7 +35,8 @@ import com.example.skyexplorer.components.ForwardButton
 @Composable
 fun ConstellationsScreen(
     viewModel: ConstellationsViewModel,
-    onGoBack: () -> Unit
+    onGoBack: () -> Unit,
+    onGoToPhotoGallery: () -> Unit
 ){
 
     Scaffold(
@@ -53,6 +55,15 @@ fun ConstellationsScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Go to previous screen",
+                        modifier = Modifier.size(70.dp)
+                    )
+                }
+                BouncyButton(
+                    onClick = onGoToPhotoGallery
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = "Go to photo gallery",
                         modifier = Modifier.size(70.dp)
                     )
                 }

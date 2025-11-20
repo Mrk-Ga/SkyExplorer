@@ -2,9 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    //alias(libs.plugins.google.services)
-    alias(libs.plugins.kotlin.serialization) // <-- Dodaj tę linijkę
-    //id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
+
+    id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0" // lub taka sama wersja jak Kotlin
 }
 
 android {
@@ -31,20 +31,19 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
     }
 }
 
+
 dependencies {
-
-
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -56,22 +55,27 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.play.services.location)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.compose.runtime.saved.instance.state)
     implementation(libs.firebase.crashlytics.buildtools)
-    //implementation(libs.androidx.ui)
-    //implementation(libs.firebase.storage)
-    //implementation(libs.androidx.compose.runtime.saved.instance.state)
-    //implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.androidx.compose.ui)
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation("androidx.compose.foundation:foundation")
 
 
     implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
@@ -84,22 +88,23 @@ dependencies {
 // Preview View
     implementation("androidx.camera:camera-view:1.4.0")
 
+// Jetpack Compose interop
+    implementation("androidx.compose.ui:ui:1.7.0")
+    implementation("androidx.compose.foundation:foundation:1.7.0")
 
 // Permission handling (recommended)
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
 
-    implementation(platform("com.google.firebase:firebase-bom:34.5.0")) // Check for the latest version
 
-    // Your other Firebase dependencies, but WITHOUT versions
-    implementation("com.google.firebase:firebase-crashlytics-buildtools") // Example
+    implementation(libs.androidx.room.ktx)
+    val roomVersion = "2.6.1"
 
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation(libs.kotlinx.serialization.json)
-    implementation("io.coil-kt.coil3:coil-compose:3.0.0")
+    ksp("androidx.room:room-compiler:$roomVersion")
+
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
 
 

@@ -2,17 +2,24 @@ package com.example.skyexplorer
 
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.skyexplorer.camera.CameraScreen
 import com.example.skyexplorer.camera.CameraViewModel
+import com.example.skyexplorer.camera.LocalRepository
 import com.example.skyexplorer.constellations.ConstellationsScreen
 import com.example.skyexplorer.constellations.ConstellationsViewModel
+import com.example.skyexplorer.photoGallery.PhotoGalleryScreen
+import com.example.skyexplorer.photoGallery.PhotoGalleryViewModel
 import com.example.skyexplorer.skymapscreen.*
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -21,6 +28,8 @@ import com.example.skyexplorer.skymapscreen.*
 @Composable
 fun AppNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "skymap") {
+
+
 
         composable("skymap")  {
             val skyMapViewModel: SkyMapViewModel = viewModel()
@@ -33,7 +42,11 @@ fun AppNavHost(navController: NavHostController) {
 
 
         composable("camera") {
-            val cameraViewModel: CameraViewModel = viewModel()
+            val app = LocalContext.current.applicationContext as SkyExplorerApp
+            val repo = app.cameraRepository
+            val cameraViewModel: CameraViewModel = viewModel(
+                factory = CameraViewModelFactory(repo)
+            )
             CameraScreen(
                 viewModel = cameraViewModel,
                 onGoBack = { navController.popBackStack() }
@@ -44,8 +57,17 @@ fun AppNavHost(navController: NavHostController) {
             val constellationsViewModel: ConstellationsViewModel = viewModel()
             ConstellationsScreen(
                 viewModel = constellationsViewModel,
-                onGoBack = { navController.popBackStack() }
+                onGoBack = { navController.popBackStack() },
+                onGoToPhotoGallery = { navController.navigate("gallery") }
             )
+        }
+
+        composable("gallery") {
+            val viewModel: PhotoGalleryViewModel = viewModel()
+            PhotoGalleryScreen(
+                viewModel = viewModel
+            )
+
         }
     }
 }

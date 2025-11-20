@@ -1,45 +1,68 @@
 package com.example.skyexplorer.camera
 
-import androidx.annotation.Nullable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.Snapshot
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.Navigation
 import com.example.skyexplorer.components.ForwardButton
-import kotlinx.serialization.descriptors.StructureKind
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen(
     viewModel: CameraViewModel,
     onGoBack: () -> Unit
 ) {
+    val cameraPermission = rememberPermissionState(android.Manifest.permission.CAMERA)
     val state by viewModel.state.collectAsState()
 
-    Scaffold(
-        bottomBar = {
+    LaunchedEffect(Unit) {
+        cameraPermission.launchPermissionRequest()
+    }
+
+    //check if permission is granted
+    if (cameraPermission.status.isGranted) {
+        val state by viewModel.state.collectAsState()
+
+        Box(modifier = Modifier.fillMaxSize()) {
+
+            //compose with camera screen and photo button
+            CameraPreview { uri ->
+                viewModel.savePhoto(uri)
+            }
+
+            //row with "go to home screen" button
             Row(
                 modifier = Modifier
+                    .align(Alignment.BottomEnd)
                     .padding(20.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                ForwardButton { onGoBack()}
+                    .background(Color.Transparent),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                ForwardButton { onGoBack() }
             }
         }
-    ){
-        innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
+    } else {
+        //in case of permission denied
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Text("CAMERA", modifier = Modifier.padding(16.dp))
+            Text("Wymagane pozwolenie na użycie kamery")
         }
     }
 
