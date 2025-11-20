@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -21,6 +25,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.example.skyexplorer.components.BouncyButton
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -60,33 +65,41 @@ fun CameraPreview(onImageCaptured: (Uri) -> Unit) {
             modifier = Modifier.fillMaxSize()
         )
 
-        FloatingActionButton(
+        Box (
+            modifier = Modifier
+                .align(androidx.compose.ui.Alignment.BottomCenter)
+                .padding(40.dp)
+                .size(80.dp),
+        ){
 
-            onClick = {
-                val photoFile = File(
-                    context.externalMediaDirs.first(),
-                    SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
-                        .format(System.currentTimeMillis()) + ".jpg"
-                )
+            BouncyButton(
 
-                val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+                onClick = {
+                    val photoFile = File(
+                        context.externalMediaDirs.first(),
+                        SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
+                            .format(System.currentTimeMillis()) + ".jpg"
+                    )
 
-                imageCapture.takePicture(
-                    outputOptions,
-                    ContextCompat.getMainExecutor(context),
-                    object : ImageCapture.OnImageSavedCallback {
-                        override fun onError(exc: ImageCaptureException) {
-                            exc.printStackTrace()
+                    val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+                    imageCapture.takePicture(
+                        outputOptions,
+                        ContextCompat.getMainExecutor(context),
+                        object : ImageCapture.OnImageSavedCallback {
+                            override fun onError(exc: ImageCaptureException) {
+                                exc.printStackTrace()
+                            }
+
+                            override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                                onImageCaptured(Uri.fromFile(photoFile))
+                            }
+
                         }
+                    )
 
-                        override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                            onImageCaptured(Uri.fromFile(photoFile))
-                        }
-
-                    }
-                )
-
-            },
+                },
+                /*
             modifier = Modifier
                 .align(androidx.compose.ui.Alignment.BottomCenter)
                 .padding(40.dp)
@@ -94,9 +107,16 @@ fun CameraPreview(onImageCaptured: (Uri) -> Unit) {
             contentColor = Color.White,
             shape = RoundedCornerShape(50),
 
+             */
 
-        ) {
 
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Circle,
+                    contentDescription = "Take photo",
+                    modifier = Modifier.size(80.dp)
+                )
+            }
         }
     }
 }

@@ -19,6 +19,7 @@ googleServices = "4.4.4"
 runtimeSavedInstanceState = "1.0.0-alpha11"
 ksp = "2.0.21-1.0.21"
 firebaseCrashlyticsBuildtoolsVersion = "3.0.6"
+uiGraphicsVersion = "1.9.5"
 
 
 [libraries]
@@ -47,6 +48,7 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtoolsVersion" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "uiGraphicsVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

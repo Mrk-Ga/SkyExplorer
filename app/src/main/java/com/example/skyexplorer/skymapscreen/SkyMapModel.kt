@@ -16,7 +16,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class SkyMapModel(
-    val context: Context
+    //val context: Context
     //private val api: << połączenie z bazą danych
 ){
 

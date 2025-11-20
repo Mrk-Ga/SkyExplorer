@@ -6,6 +6,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.skyexplorer.components.BouncyButton
 import com.example.skyexplorer.components.ForwardButton
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -48,12 +55,22 @@ fun CameraScreen(
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(20.dp)
+                    .padding(40.dp)
                     .background(Color.Transparent),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                ForwardButton { onGoBack() }
+                BouncyButton(
+                    onClick = onGoBack
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = "Go to main screen",
+                        modifier = Modifier
+                            .size(50.dp)
+                            //.padding(30.dp)
+                    )
+                }
             }
         }
     } else {
@@ -63,6 +80,16 @@ fun CameraScreen(
             contentAlignment = Alignment.Center
         ) {
             Text("Wymagane pozwolenie na użycie kamery")
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(20.dp)
+                    .background(Color.Transparent),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                ForwardButton { onGoBack() }
+            }
         }
     }
 

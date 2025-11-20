@@ -1,17 +1,23 @@
 package com.example.skyexplorer.skymapscreen
 
+import SkyMapViewModel
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import android.webkit.WebView
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -41,6 +47,7 @@ import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skyexplorer.components.BackwardButton
@@ -51,6 +58,7 @@ import com.example.skyexplorer.components.InfoButton
 
 @SuppressLint("SetJavaScriptEnabled", "RememberReturnType")
 @RequiresApi(Build.VERSION_CODES.O)
+@androidx.annotation.RequiresPermission(allOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION])
 @Composable
 fun SkyMapScreen(
     viewModel: SkyMapViewModel,
@@ -59,78 +67,76 @@ fun SkyMapScreen(
 ) {
     val context = LocalContext.current
 
+    val permissionFine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+    val permissionCoarse = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+
+    if (permissionFine != PackageManager.PERMISSION_GRANTED &&
+        permissionCoarse != PackageManager.PERMISSION_GRANTED) {
+        Text("⚠️ Brak uprawnień lokalizacji")
+        return
+    }
+    val stars by viewModel.stars.collectAsState()
+    LaunchedEffect(Unit) {
+        // uruchamiamy korutynę w Compose
+        Log.d("DEBUG", "LaunchedEffect start – uruchamiam viewModel.loadStars()")
+        viewModel.loadStars()
+    }
 
     Scaffold(
+        containerColor = Color.Transparent,
         bottomBar = {
-            Row(
-                modifier = Modifier.padding(20.dp).fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Box(
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp) // stała wysokość bottom bara
+                    .padding(horizontal = 40.dp)
             ) {
-/*
-                CameraButton(onClick = {
-                    viewModel.handleIntent(SkyMapIntent.NavigateToCamera)
-                        ?.let { onNavigateToCamera() }
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+
+                    BouncyButton(onClick = { onNavigateToCamera() }) {
+                        Icon(
+                            imageVector = Icons.Filled.CameraAlt,
+                            contentDescription = null,
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+
+                    BouncyButton(onClick = { onNavigateToConstellations() }) {
+                        Icon(
+                            imageVector = Icons.Filled.Info,
+                            contentDescription = null,
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
                 }
-                )
-
- */
-/*
-                InfoButton(onClick = {
-                    viewModel.handleIntent(SkyMapIntent.NavigateToConstellations)
-                        ?.let { onNavigateToConstellations() }
-                })
-
- */
-                BouncyButton(onClick = {
-                    viewModel.handleIntent(SkyMapIntent.NavigateToCamera)
-                        ?.let { onNavigateToCamera()}
-                }){
-                    Icon(
-                        imageVector = Icons.Filled.CameraAlt,
-                        contentDescription = "Go to camera",
-                        modifier = Modifier.size(70.dp),
-                        tint = Color.DarkGray
-                    )
-                }
-
-                BouncyButton(onClick = {
-                    viewModel.handleIntent(SkyMapIntent.NavigateToConstellations)
-                        ?.let { onNavigateToConstellations()}
-                }){
-                    Icon(
-                        imageVector = Icons.Filled.Info,
-                        contentDescription = "Go to informations",
-                        modifier = Modifier.size(70.dp),
-                        tint = Color.DarkGray
-                    )
-                }
-
-
             }
         }
-        ){
-        innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()
-            ){
-                Text("SKY MAP", modifier = Modifier.padding(16.dp))
+    ){
+            innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        )  {
+            Text("SKY MAP", modifier = Modifier.padding(16.dp))
 
-                val stars = remember {
-                    context.assets.open("stars.json")
-                        .bufferedReader()
-                        .use { it.readText() }
-                        .replace("NaN", "null") // Dodaj tę linię, aby zamienić NaN na null
-                }
-                //StarMap(stars)
-                StarMap(viewModel.loadStars(LocalContext.current))
+
+
+            if (stars.isEmpty()) {
+                Text("Wczytywanie nieba...")
+            } else {
+                StarMap(stars)
+            }
+
+
         }
 
     }
 
 }
-
-
-
-

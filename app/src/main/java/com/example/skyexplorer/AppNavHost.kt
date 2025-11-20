@@ -1,6 +1,7 @@
 package com.example.skyexplorer
 
 
+import SkyMapViewModel
 import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Build

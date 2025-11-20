@@ -138,8 +138,8 @@ fun BouncyButton(
                     onTap = { onClick() }
                 )
             }
-                .padding(15.dp)
-                .size(80.dp)
+                //.padding(15.dp)
+                //.size(80.dp)
 
     ) {
         content()
