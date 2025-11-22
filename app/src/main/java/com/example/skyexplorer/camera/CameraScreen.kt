@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material3.Icon
@@ -46,12 +47,10 @@ fun CameraScreen(
 
         Box(modifier = Modifier.fillMaxSize()) {
 
-            //compose with camera screen and photo button
             CameraPreview { uri ->
                 viewModel.savePhoto(uri)
             }
 
-            //row with "go to home screen" button
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -64,7 +63,7 @@ fun CameraScreen(
                     onClick = onGoBack
                 ) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        imageVector = Icons.AutoMirrored.Filled.NavigateNext,
                         contentDescription = "Go to main screen",
                         modifier = Modifier
                             .size(50.dp)

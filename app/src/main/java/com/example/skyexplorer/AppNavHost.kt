@@ -59,7 +59,8 @@ fun AppNavHost(navController: NavHostController) {
             ConstellationsScreen(
                 viewModel = constellationsViewModel,
                 onGoBack = { navController.popBackStack() },
-                onGoToPhotoGallery = { navController.navigate("gallery") }
+                onGoToPhotoGallery = { navController.navigate("gallery") },
+                onNavigateToCamera = {navController.navigate("camera")}
             )
         }
 

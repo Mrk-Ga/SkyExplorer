@@ -5,6 +5,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.pdf.content.PdfPageGotoLinkContent
 import android.os.Build
 import android.util.Log
 import android.webkit.WebView
@@ -24,11 +25,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
@@ -56,6 +59,7 @@ import com.example.skyexplorer.components.CameraButton
 import com.example.skyexplorer.components.ForwardButton
 import com.example.skyexplorer.components.InfoButton
 
+
 @SuppressLint("SetJavaScriptEnabled", "RememberReturnType")
 @RequiresApi(Build.VERSION_CODES.O)
 @androidx.annotation.RequiresPermission(allOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION])
@@ -77,7 +81,6 @@ fun SkyMapScreen(
     }
     val stars by viewModel.stars.collectAsState()
     LaunchedEffect(Unit) {
-        // uruchamiamy korutynę w Compose
         Log.d("DEBUG", "LaunchedEffect start – uruchamiam viewModel.loadStars()")
         viewModel.loadStars()
     }
@@ -85,6 +88,49 @@ fun SkyMapScreen(
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
+            NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
+                NavigationBarItem(
+                    selected = false,
+                    onClick = {
+                        onNavigateToCamera()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.CameraAlt,
+                            contentDescription = null,
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = {
+                        //
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Home,
+                            contentDescription = null,
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = {
+                        onNavigateToConstellations()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Info,
+                            contentDescription = null,
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+                )
+
+            }
+            /*
             Box(
 
                 modifier = Modifier
@@ -116,6 +162,8 @@ fun SkyMapScreen(
                     }
                 }
             }
+
+             */
         }
     ){
             innerPadding ->
