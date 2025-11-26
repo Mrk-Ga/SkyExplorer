@@ -78,7 +78,7 @@ class SkyMapViewModel (application: Application): AndroidViewModel(application) 
             .replace("NaN", "null") // Dodaj tę linię, aby zamienić NaN na null
 
         val starsDecoded = Json.decodeFromString<List<Star>>(starsJsonString)
-        Log.d("STARS", starsDecoded.toString())
+        //Log.d("STARS", starsDecoded.toString())
 
 
         val stars = mutableListOf<Star>()
@@ -90,17 +90,16 @@ class SkyMapViewModel (application: Application): AndroidViewModel(application) 
             star.alt = cords.alt
             star.az = cords.az
 
-            star.alt?.let {
-
-                if(it > 0){
-                    stars.add(star)
-                }
+            if (star.alt!! > 0 && star.magnitude < 6.0) {
+                stars.add(star)
             }
         }
 
-        Log.d("STARS", stars.toString())
 
-        return stars
+
+        //Log.d("STARS", stars.toString())
+
+        return stars.sortedBy{star -> star.magnitude}.take(2000)
 
 
 
