@@ -61,47 +61,13 @@ fun ConstellationsScreen(
         bottomBar = {
 
                 //BackwardButton { onGoBack() }
-            NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        onNavigateToCamera()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.CameraAlt,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        onGoBack()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Home,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        onGoToPhotoGallery()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Info,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-                )
-            }
+            /*
+            com.example.skyexplorer.components.NavigationBar(
+                onNavigateToCamera = onNavigateToCamera,
+                onNavigateToConstellations =
+            )
+
+             */
                 /*
                 BouncyButton(
                     onClick = onGoBack

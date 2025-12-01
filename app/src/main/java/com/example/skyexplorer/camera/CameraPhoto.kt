@@ -75,6 +75,7 @@ fun CameraPreview(onImageCaptured: (Uri) -> Unit) {
             BouncyButton(
 
                 onClick = {
+                    //
                     val photoFile = File(
                         context.externalMediaDirs.first(),
                         SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)

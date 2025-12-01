@@ -88,6 +88,11 @@ fun SkyMapScreen(
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
+            com.example.skyexplorer.components.NavigationBar(
+                onNavigateToCamera = onNavigateToCamera,
+                onNavigateToConstellations = onNavigateToConstellations
+            )
+            /*
             NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
                 NavigationBarItem(
                     selected = false,
@@ -130,6 +135,8 @@ fun SkyMapScreen(
                 )
 
             }
+
+             */
             /*
             Box(
 
