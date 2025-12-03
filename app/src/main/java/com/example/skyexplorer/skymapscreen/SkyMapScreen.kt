@@ -53,6 +53,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.skyexplorer.components.AppNavigationBar
 import com.example.skyexplorer.components.BackwardButton
 import com.example.skyexplorer.components.BouncyButton
 import com.example.skyexplorer.components.CameraButton
@@ -67,7 +68,8 @@ import com.example.skyexplorer.components.InfoButton
 fun SkyMapScreen(
     viewModel: SkyMapViewModel,
     onNavigateToCamera: () -> Unit,
-    onNavigateToConstellations: () -> Unit
+    onNavigateToConstellations: () -> Unit,
+    onNavigateToSkyMap: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -88,82 +90,12 @@ fun SkyMapScreen(
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
-            NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        onNavigateToCamera()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.CameraAlt,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        //
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Home,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        onNavigateToConstellations()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Info,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-                )
 
-            }
-            /*
-            Box(
-
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp) // stała wysokość bottom bara
-                    .padding(horizontal = 40.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-
-                    BouncyButton(onClick = { onNavigateToCamera() }) {
-                        Icon(
-                            imageVector = Icons.Filled.CameraAlt,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-
-                    BouncyButton(onClick = { onNavigateToConstellations() }) {
-                        Icon(
-                            imageVector = Icons.Filled.Info,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-                }
-            }
-
-             */
+            AppNavigationBar(
+                onNavigateToCamera = onNavigateToCamera,
+                onNavigateToConstellations = onNavigateToConstellations,
+                onNavigateToSkyMap = onNavigateToSkyMap
+            )
         }
     ){
             innerPadding ->
@@ -179,7 +111,7 @@ fun SkyMapScreen(
             if (stars.isEmpty()) {
                 Text("Wczytywanie nieba...")
             } else {
-                StarMap(stars)
+                StarMap(stars, viewModel.loadConstellations())
             }
 
 

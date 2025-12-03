@@ -7,6 +7,7 @@ import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import com.example.skyexplorer.skymapscreen.Constellation
 import com.example.skyexplorer.skymapscreen.HorizontalCoordinates
 import com.example.skyexplorer.skymapscreen.SkyMapIntent
 import com.example.skyexplorer.skymapscreen.SkyMapModel
@@ -90,16 +91,16 @@ class SkyMapViewModel (application: Application): AndroidViewModel(application) 
             star.alt = cords.alt
             star.az = cords.az
 
-            if (star.alt!! > 0 && star.magnitude < 6.0) {
+            //if (star.alt!! > 0 /*&& star.magnitude < 6.0*/) {
                 stars.add(star)
-            }
+            //}
         }
 
 
 
         //Log.d("STARS", stars.toString())
 
-        return stars.sortedBy{star -> star.magnitude}.take(2000)
+        return stars //.sortedBy{star -> star.magnitude}.take(2000)
 
 
 
@@ -119,6 +120,15 @@ class SkyMapViewModel (application: Application): AndroidViewModel(application) 
 
             _stars.value = result
         }
+    }
+
+    fun loadConstellations(): List<Constellation> {
+        val context = getApplication<Application>().applicationContext
+        val json = context.assets.open("constellations_lines.json")
+            .bufferedReader()
+            .use { it.readText() }
+
+        return Json.decodeFromString(json)
     }
 
 

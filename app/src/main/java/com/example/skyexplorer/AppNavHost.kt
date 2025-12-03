@@ -37,7 +37,8 @@ fun AppNavHost(navController: NavHostController) {
             SkyMapScreen(
                 viewModel = skyMapViewModel,
                 onNavigateToCamera = { navController.navigate("camera") },
-                onNavigateToConstellations = { navController.navigate("assets/constellations") }
+                onNavigateToConstellations = { navController.navigate("assets/constellations") },
+                onNavigateToSkyMap = { navController.navigate("skymap") }
             )
         }
 
@@ -58,9 +59,11 @@ fun AppNavHost(navController: NavHostController) {
             val constellationsViewModel: ConstellationsViewModel = viewModel()
             ConstellationsScreen(
                 viewModel = constellationsViewModel,
-                onGoBack = { navController.popBackStack() },
-                onGoToPhotoGallery = { navController.navigate("gallery") },
-                onNavigateToCamera = {navController.navigate("camera")}
+
+                onNavigateToCamera = { navController.navigate("camera") },
+                onNavigateToConstellations = { navController.navigate("assets/constellations") },
+                onNavigateToSkyMap = { navController.navigate("skymap") },
+                onNavigateToPhotoGallery = { navController.navigate("gallery") }
             )
         }
 

@@ -44,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.skyexplorer.components.AppNavigationBar
 import com.example.skyexplorer.components.BackwardButton
 import com.example.skyexplorer.components.BouncyButton
 import com.example.skyexplorer.components.ConstellationItem
@@ -52,77 +53,19 @@ import com.example.skyexplorer.components.ForwardButton
 @Composable
 fun ConstellationsScreen(
     viewModel: ConstellationsViewModel,
-    onGoBack: () -> Unit,
-    onGoToPhotoGallery: () -> Unit,
-    onNavigateToCamera: () -> Unit
+    onNavigateToSkyMap: () -> Unit,
+    onNavigateToConstellations: () -> Unit,
+    onNavigateToCamera: () -> Unit,
+    onNavigateToPhotoGallery: () -> Unit
 ){
 
     Scaffold(
         bottomBar = {
-
-                //BackwardButton { onGoBack() }
-            NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        onNavigateToCamera()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.CameraAlt,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        onGoBack()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Home,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        onGoToPhotoGallery()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Info,
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
-                )
-            }
-                /*
-                BouncyButton(
-                    onClick = onGoBack
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Go to previous screen",
-                        modifier = Modifier.size(70.dp)
-                    )
-                }
-                BouncyButton(
-                    onClick = onGoToPhotoGallery
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = "Go to photo gallery",
-                        modifier = Modifier.size(70.dp)
-                    )
-                }
-
-                 */
+            AppNavigationBar(
+                onNavigateToCamera = onNavigateToCamera,
+                onNavigateToConstellations = onNavigateToConstellations,
+                onNavigateToSkyMap = onNavigateToSkyMap
+            )
 
         }
     ) { innerPadding ->
@@ -136,7 +79,7 @@ fun ConstellationsScreen(
             Text("CONSTELLATIONS", modifier = Modifier.padding(16.dp))
 
             //ConstellationItem()
-            ConstellationsList(items, onGoToPhotoGallery)
+            ConstellationsList(items, onNavigateToPhotoGallery)
 
         }
     }
