@@ -76,7 +76,7 @@ fun ConstellationsScreen(
             //    .background(Color.DarkGray)
             ,
         ) {
-            Text("CONSTELLATIONS", modifier = Modifier.padding(16.dp))
+            //Text("KONSTELACJE", modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally))
 
             //ConstellationItem()
             ConstellationsList(items, onNavigateToPhotoGallery)

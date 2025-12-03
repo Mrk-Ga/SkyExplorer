@@ -1,0 +1,153 @@
+[
+    {
+      "polish": "Wielka Niedźwiedzica",
+      "latin": "Ursa Major",
+      "description": "Jedna z najbardziej rozpoznawalnych konstelacji na półkuli północnej. Zawiera asteryzm Wielki Wóz, który pomaga znaleźć Gwiazdę Polarną. Jest widoczna przez cały rok w Polsce."
+    },
+    {
+      "polish": "Mała Niedźwiedzica",
+      "latin": "Ursa Minor",
+      "description": "Konstelacja zawierająca Gwiazdę Polarną – Polaris. Tworzy charakterystyczny Mały Wóz. Jest konstelacją okołobiegunową w Polsce."
+    },
+    {
+      "polish": "Kasjopeja",
+      "latin": "Cassiopeia",
+      "description": "Ma kształt litery W lub M w zależności od położenia. Leży w pobliżu Gwiazdy Polarnej i jest zawsze widoczna w Polsce. Jest kluczem do odnajdywania wielu obiektów głębokiego nieba."
+    },
+    {
+      "polish": "Cefeusz",
+      "latin": "Cepheus",
+      "description": "Konstelacja przypominająca kształtem dom z dachem. Znajduje się blisko Kasjopei i jest konstelacją okołobiegunową. Zawiera wiele gwiazd zmiennych i mgławic."
+    },
+    {
+      "polish": "Smok",
+      "latin": "Draco",
+      "description": "Długi i wijący się układ gwiazd między Wielką a Małą Niedźwiedzicą. Jest konstelacją okołobiegunową. Znana z gwiazdy Thuban, dawnej Gwiazdy Polarnej."
+    },
+    {
+      "polish": "Łabędź",
+      "latin": "Cygnus",
+      "description": "Konstelacja leżąca na Drodze Mlecznej, przypominająca lecącego ptaka. Zawiera jasną gwiazdę Deneb. Jest bogata w mgławice i obiekty głębokiego nieba."
+    },
+    {
+      "polish": "Lutnia",
+      "latin": "Lyra",
+      "description": "Mała konstelacja z jasną gwiazdą Wegą. Jest częścią Trójkąta Letniego. Słynie z Mgławicy Pierścień (M57)."
+    },
+    {
+      "polish": "Orzeł",
+      "latin": "Aquila",
+      "description": "Konstelacja przedstawiająca orła niosącego pioruny Zeusa. Zawiera jasną gwiazdę Altair. Jest częścią Trójkąta Letniego i leży na Drodze Mlecznej."
+    },
+    {
+      "polish": "Pegaz",
+      "latin": "Pegasus",
+      "description": "Konstelacja znana z Wielkiego Kwadratu Pegaza. Łączy się optycznie z Andromedą. Jest dobrze widoczna jesienią."
+    },
+    {
+      "polish": "Andromeda",
+      "latin": "Andromeda",
+      "description": "Znajduje się obok Pegaza i zawiera Galaktykę Andromedy (M31). Jest jedną z najbardziej znanych konstelacji jesiennego nieba. Jej gwiazdy tworzą charakterystyczny łańcuch."
+    },
+    {
+      "polish": "Perseusz",
+      "latin": "Perseus",
+      "description": "Konstelacja kojarzona z mitycznym bohaterem Perseuszem. Zawiera gromadę podwójną h+χ. Jest związana z rojem meteorów Perseidów."
+    },
+    {
+      "polish": "Byk",
+      "latin": "Taurus",
+      "description": "Konstelacja z jasną gwiazdą Aldebaran. Zawiera słynne gromady otwarte Hiady i Plejady. Jest związana z zimowym niebem."
+    },
+    {
+      "polish": "Orion",
+      "latin": "Orion",
+      "description": "Jedna z najbardziej rozpoznawalnych konstelacji zimowych. Zawiera trzy gwiazdy Pasa Oriona. Mieści też Mgławicę Oriona (M42)."
+    },
+    {
+      "polish": "Bliźnięta",
+      "latin": "Gemini",
+      "description": "Konstelacja z gwiazdami Kastor i Polluks. Leży na zimowym niebie obok Oriona. Jest związana z rojem meteorów Geminidów."
+    },
+    {
+      "polish": "Woźnica",
+      "latin": "Auriga",
+      "description": "Zawiera jasną gwiazdę Capella. Leży blisko Byka i Perseusza. Jest bogata w gromady otwarte."
+    },
+    {
+      "polish": "Rak",
+      "latin": "Cancer",
+      "description": "Zodiakalna konstelacja o dość słabych gwiazdach. Słynie z gromady otwartej M44, zwanej Żłóbkiem. Najlepiej widoczna wiosną."
+    },
+    {
+      "polish": "Lew",
+      "latin": "Leo",
+      "description": "Konstelacja o charakterystycznym kształcie przypominającym lwa. Zawiera jasną gwiazdę Regulus. Jest związana z rojem meteorów Leonidów."
+    },
+    {
+      "polish": "Wolarz",
+      "latin": "Boötes",
+      "description": "Konstelacja rozpoznawalna dzięki jasnej gwieździe Arktur. Leży wiosną wysoko nad horyzontem. Bywa kojarzona z postacią pasterza lub oracza."
+    },
+    {
+      "polish": "Korona Północna",
+      "latin": "Corona Borealis",
+      "description": "Ma kształt półkolistej korony. Jest niewielką, ale wyraźną konstelacją. Najlepiej widoczna wiosną i wczesnym latem."
+    },
+    {
+      "polish": "Herkules",
+      "latin": "Hercules",
+      "description": "Rozległa konstelacja o umiarkowanie jasnych gwiazdach. Zawiera słynną gromadę kulistą M13. Najlepiej widoczna latem."
+    },
+    {
+      "polish": "Smok Wodny",
+      "latin": "Hydra",
+      "description": "Najdłuższa konstelacja na niebie, choć w Polsce dobrze widoczna tylko częściowo. Reprezentuje mitycznego węża wodnego. Towarzyszą jej liczne mniejsze konstelacje."
+    },
+    {
+      "polish": "Ryś",
+      "latin": "Lynx",
+      "description": "Konstelacja o bardzo słabych gwiazdach. Została utworzona w XVII wieku przez Jana Heweliusza. Najlepiej widoczna zimą i wiosną."
+    },
+    {
+      "polish": "Żyrafa",
+      "latin": "Camelopardalis",
+      "description": "Rozległa, ale mało wyraźna konstelacja okołobiegunowa. Leży między Wielką Niedźwiedzicą a Perseuszem. Zawiera kilka ciekawych mgławic i gromad."
+    },
+    {
+      "polish": "Jaszczurka",
+      "latin": "Lacerta",
+      "description": "Mała konstelacja leżąca na Drodze Mlecznej. Jej gwiazdy tworzą liniowy układ przypominający jaszczurkę. Najlepiej widoczna jesienią."
+    },
+    {
+      "polish": "Ryby",
+      "latin": "Pisces",
+      "description": "Konstelacja zodiakalna o słabych gwiazdach. Reprezentuje dwie mityczne ryby połączone wstęgą. Najlepiej widoczna jesienią."
+    },
+    {
+      "polish": "Strzała",
+      "latin": "Sagitta",
+      "description": "Jedna z najmniejszych konstelacji na niebie. Leży na Drodze Mlecznej między Orłem a Lutnią. Mimo niewielkich rozmiarów jest łatwa do identyfikacji."
+    },
+    {
+      "polish": "Delfin",
+      "latin": "Delphinus",
+      "description": "Mała, ale wyrazista konstelacja przypominająca kształtem delfina. Znajduje się obok Altaira. Najlepiej widoczna latem."
+    },
+    {
+      "polish": "Strzelec (północna część)",
+      "latin": "Sagittarius (visible north part)",
+      "description": "Tylko część tej konstelacji jest widoczna z Polski. Leży na bogatym w obiekty rejonie Drogi Mlecznej. Kojarzona z centrum naszej galaktyki."
+    },
+    {
+      "polish": "Wężownik",
+      "latin": "Ophiuchus",
+      "description": "Rozległa konstelacja przedstawiająca mężczyznę trzymającego węża. Leży między Skorpionem a Herkulesem. Jest powiązana z rojem meteorów Ofiuchidów."
+    },
+    {
+      "polish": "Wąż",
+      "latin": "Serpens",
+      "description": "Jedyna konstelacja podzielona na dwie części: Głowę i Ogon Węża. Otacza Wężownika. Leży w bogatym regionie Drogi Mlecznej."
+    }
+  ]
+

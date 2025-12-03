@@ -12,6 +12,7 @@ import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -20,7 +21,11 @@ fun AppNavigationBar(
     onNavigateToConstellations: () -> Unit,
     onNavigateToSkyMap: () -> Unit
 ){
-    NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
+    NavigationBar(windowInsets = NavigationBarDefaults.windowInsets,
+        containerColor = Color.Transparent,
+        contentColor = Color.White
+    ) {
+
         NavigationBarItem(
             selected = false,
             onClick = {
@@ -30,7 +35,7 @@ fun AppNavigationBar(
                 Icon(
                     imageVector = Icons.Filled.CameraAlt,
                     contentDescription = null,
-                    modifier = Modifier.size(50.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
         )
@@ -43,7 +48,7 @@ fun AppNavigationBar(
                 Icon(
                     imageVector = Icons.Filled.Home,
                     contentDescription = null,
-                    modifier = Modifier.size(50.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
         )
@@ -56,7 +61,7 @@ fun AppNavigationBar(
                 Icon(
                     imageVector = Icons.Filled.Info,
                     contentDescription = null,
-                    modifier = Modifier.size(50.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
         )

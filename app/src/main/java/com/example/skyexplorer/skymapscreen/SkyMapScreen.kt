@@ -104,12 +104,11 @@ fun SkyMapScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
         )  {
-            Text("SKY MAP", modifier = Modifier.padding(16.dp))
 
 
 
             if (stars.isEmpty()) {
-                Text("Wczytywanie nieba...")
+                Text("Wczytywanie nieba...", modifier = Modifier.padding(100.dp))
             } else {
                 StarMap(stars, viewModel.loadConstellations())
             }

@@ -47,7 +47,7 @@ fun AppNavHost(navController: NavHostController) {
             val app = LocalContext.current.applicationContext as SkyExplorerApp
             val repo = app.cameraRepository
             val cameraViewModel: CameraViewModel = viewModel(
-                factory = CameraViewModelFactory(repo)
+                factory = CameraViewModelFactory(repo, app)
             )
             CameraScreen(
                 viewModel = cameraViewModel,

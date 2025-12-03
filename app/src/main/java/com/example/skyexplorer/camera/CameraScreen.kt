@@ -47,9 +47,14 @@ fun CameraScreen(
 
         Box(modifier = Modifier.fillMaxSize()) {
 
-            CameraPreview { uri ->
+            CameraPreview(
+                viewModel = viewModel
+            )
+            /*{ uri ->
                 viewModel.savePhoto(uri)
             }
+
+             */
 
             Row(
                 modifier = Modifier
