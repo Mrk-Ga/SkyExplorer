@@ -5,6 +5,7 @@ import SkyMapViewModel
 import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -12,8 +13,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.skyexplorer.camera.CameraScreen
 import com.example.skyexplorer.camera.CameraViewModel
 import com.example.skyexplorer.camera.LocalRepository
@@ -63,15 +66,25 @@ fun AppNavHost(navController: NavHostController) {
                 onNavigateToCamera = { navController.navigate("camera") },
                 onNavigateToConstellations = { navController.navigate("assets/constellations") },
                 onNavigateToSkyMap = { navController.navigate("skymap") },
-                onNavigateToPhotoGallery = { navController.navigate("gallery")}
+                onNavigateToPhotoGallery = { item ->
+                    navController.navigate("gallery/${item}")
+
+                }
             )
         }
 
-        composable("gallery") {
+        composable(
+            route = "gallery/{item}",
+            arguments = listOf(
+                navArgument("item") { type = NavType.StringType }
+            )
+        ) {
             val viewModel: PhotoGalleryViewModel = viewModel()
             PhotoGalleryScreen(
                 viewModel = viewModel,
-                onNavigateToConstellations = {navController.navigate("assets/constellations")}
+                constellationName = it.arguments?.getString("item") ?: "",
+                onNavigateToConstellations = {navController.navigate("assets/constellations")
+                }
             )
 
         }

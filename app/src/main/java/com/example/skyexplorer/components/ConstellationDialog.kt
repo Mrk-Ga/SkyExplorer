@@ -60,7 +60,7 @@ fun DialogWithImage(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onConfirmation(constellationInfo.polish) }
+                            .clickable { onConfirmation(constellationInfo.latin) }
                             .align(Alignment.CenterHorizontally)
                     ) {
                         Box(

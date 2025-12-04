@@ -2,6 +2,7 @@ package com.example.skyexplorer.photoGallery
 
 import android.annotation.SuppressLint
 import android.media.Image
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,7 +35,8 @@ import com.example.skyexplorer.components.BouncyButton
 @Composable
 fun PhotoGalleryScreen(
     viewModel: PhotoGalleryViewModel = viewModel(),
-    onNavigateToConstellations: () -> Unit
+    onNavigateToConstellations: () -> Unit,
+    constellationName: String
 ) {
     val photos by viewModel.photos.collectAsState()
 
@@ -61,7 +63,19 @@ fun PhotoGalleryScreen(
     ) { innerPadding ->
 
         LazyColumn {
-            items(photos) { photo ->
+
+            val regex = Regex(".*/${Regex.escape(constellationName).replace(" ", "%20")}_.*\\.jpg$")
+
+            //val allFiles = photos
+            val filteredFiles = photos.filter { fileName ->
+                //Log.d("CONST NAME", constellationName)
+                //Log.d("FILENAME", fileName.uri)
+
+                regex.matches(fileName.uri)
+            }
+
+            items(filteredFiles) { photo ->
+
                 ElevatedCard(
                     onClick = { viewModel.deletePhoto(photo) }
                 ) {

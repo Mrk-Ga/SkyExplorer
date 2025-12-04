@@ -10,7 +10,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class PhotoGalleryViewModel(application: Application) : AndroidViewModel(application) {
+class PhotoGalleryViewModel(
+    application: Application,
+    //val constellationName: String
+) : AndroidViewModel(application) {
 
     private val repo = LocalRepository(application)
 
