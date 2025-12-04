@@ -63,14 +63,15 @@ fun AppNavHost(navController: NavHostController) {
                 onNavigateToCamera = { navController.navigate("camera") },
                 onNavigateToConstellations = { navController.navigate("assets/constellations") },
                 onNavigateToSkyMap = { navController.navigate("skymap") },
-                onNavigateToPhotoGallery = { navController.navigate("gallery") }
+                onNavigateToPhotoGallery = { navController.navigate("gallery")}
             )
         }
 
         composable("gallery") {
             val viewModel: PhotoGalleryViewModel = viewModel()
             PhotoGalleryScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onNavigateToConstellations = {navController.navigate("assets/constellations")}
             )
 
         }

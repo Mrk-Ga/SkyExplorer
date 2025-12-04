@@ -13,24 +13,11 @@ import com.example.skyexplorer.components.ConstellationInfo
 import com.example.skyexplorer.components.ConstellationItem
 
 
-data class Item(val name: String, val imageName: String)
-
-val items = listOf(
-    Item("Pierwszy", "constellationsPhotos/Andromeda.jpg"),
-    Item("Drugi", "constellationsPhotos/Andromeda.jpg"),
-    Item("Trzeci", "constellationsPhotos/Andromeda.jpg"),
-    Item("Pierwszy", "constellationsPhotos/Andromeda.jpg"),
-    Item("Drugi", "constellationsPhotos/Andromeda.jpg"),
-    Item("Trzeci", "constellationsPhotos/Andromeda.jpg"),
-    Item("Pierwszy", "constellationsPhotos/Andromeda.jpg"),
-    Item("Drugi", "constellationsPhotos/Andromeda.jpg"),
-    Item("Trzeci", "constellationsPhotos/Andromeda.jpg")
-)
 @Composable
 fun ConstellationsList(
     viewModel: ConstellationsViewModel,
     items: List<ConstellationInfo>,
-    onClickTEST: ()->Unit
+    onConstellationChoose: (constellationName: String)->Unit
 ) {
 
     val photos by viewModel.photos.collectAsState()
@@ -49,20 +36,13 @@ fun ConstellationsList(
             ConstellationItem(
                 mainContent = item.polish,
                 imageName = item.latin,
-                onClick = onClickTEST
+                onClick = { constellationName ->
+                    onConstellationChoose(constellationName)
+                }
             )
 
         }
     }
-    /*
-    LazyVerticalGrid {
-        items(items) { item ->
-            ConstellationItem(
-                mainContent = item.name,
-                imageName = item.imageName
-            )
-        }
-    }
 
-     */
+
 }

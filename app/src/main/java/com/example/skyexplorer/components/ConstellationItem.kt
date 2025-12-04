@@ -35,35 +35,8 @@ import java.io.File
 fun ConstellationItem(
     mainContent: String,
     imageName: String,
-    onClick: () -> Unit
+    onClick: (constellationName: String) -> Unit
 ) {
-
-    /*
-    ListItem(
-
-
-        modifier = Modifier
-            .padding(10.dp)
-            .clip(RoundedCornerShape(12.dp))
-
-        //    .background(Color.Blue)
-        ,
-        leadingContent = {
-            AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("file:///android_asset/$imageName")
-                .build(),
-            contentDescription = null,
-
-            modifier = Modifier
-                .size(64.dp)
-                .clip(RoundedCornerShape(12.dp)),
-            contentScale = ContentScale.Crop
-        ) },
-        headlineContent = {Text(text = mainContent)}
-    )
-
-     */
 
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
@@ -71,7 +44,7 @@ fun ConstellationItem(
         ),
         modifier = Modifier
             .size(width = 200.dp, height = 170.dp),
-        onClick = onClick
+        onClick = { onClick(imageName) }
     ) {
         Column(
             modifier = Modifier
