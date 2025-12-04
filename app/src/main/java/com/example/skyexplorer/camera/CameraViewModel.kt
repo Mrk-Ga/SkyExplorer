@@ -27,8 +27,8 @@ class CameraViewModel (
     private val repo: LocalRepository,
     application: Application
 ) : AndroidViewModel(application) {
-    private val _state = MutableStateFlow(CameraState())
-    val state = _state.asStateFlow()
+    //private val _state = MutableStateFlow(CameraState())
+    //val state = _state.asStateFlow()
 
 /*
     fun chooseConstellationToPhoto(){

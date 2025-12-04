@@ -59,6 +59,8 @@ fun ConstellationsScreen(
     onNavigateToPhotoGallery: () -> Unit
 ){
 
+
+
     Scaffold(
         bottomBar = {
             AppNavigationBar(
@@ -79,7 +81,7 @@ fun ConstellationsScreen(
             //Text("KONSTELACJE", modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally))
 
             //ConstellationItem()
-            ConstellationsList(items, onNavigateToPhotoGallery)
+            ConstellationsList(viewModel, viewModel.loadConstellationsInfo(), onNavigateToPhotoGallery)
 
         }
     }
@@ -87,52 +89,4 @@ fun ConstellationsScreen(
 
 }
 
-data class Item(val name: String, val imageName: String)
-
-val items = listOf(
-    Item("Pierwszy", "andromeda_constellation.jpg"),
-    Item("Drugi", "andromeda_constellation.jpg"),
-    Item("Trzeci", "andromeda_constellation.jpg"),
-    Item("Pierwszy", "andromeda_constellation.jpg"),
-    Item("Drugi", "andromeda_constellation.jpg"),
-    Item("Trzeci", "andromeda_constellation.jpg"),
-    Item("Pierwszy", "andromeda_constellation.jpg"),
-    Item("Drugi", "andromeda_constellation.jpg"),
-    Item("Trzeci", "andromeda_constellation.jpg")
-)
-@Composable
-fun ConstellationsList(
-    items: List<Item>,
-    onClickTEST: ()->Unit
-) {
-
-    LazyVerticalGrid(
-        contentPadding = PaddingValues(15.dp),
-        columns = GridCells.Adaptive(minSize = 128.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-
-
-    ) {
-        items(items) { item ->
-            ConstellationItem(
-                mainContent = item.name,
-                imageName = item.imageName,
-                onClick = onClickTEST
-            )
-
-        }
-    }
-    /*
-    LazyVerticalGrid {
-        items(items) { item ->
-            ConstellationItem(
-                mainContent = item.name,
-                imageName = item.imageName
-            )
-        }
-    }
-
-     */
-}
 

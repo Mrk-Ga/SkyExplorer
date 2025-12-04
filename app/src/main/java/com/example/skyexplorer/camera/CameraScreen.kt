@@ -28,6 +28,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
+
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen(
@@ -35,7 +37,7 @@ fun CameraScreen(
     onGoBack: () -> Unit
 ) {
     val cameraPermission = rememberPermissionState(android.Manifest.permission.CAMERA)
-    val state by viewModel.state.collectAsState()
+    //val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
         cameraPermission.launchPermissionRequest()
@@ -43,7 +45,7 @@ fun CameraScreen(
 
     //check if permission is granted
     if (cameraPermission.status.isGranted) {
-        val state by viewModel.state.collectAsState()
+        //val state by viewModel.state.collectAsState()
 
         Box(modifier = Modifier.fillMaxSize()) {
 

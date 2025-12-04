@@ -70,7 +70,7 @@ fun ConstellationItem(
             defaultElevation = 6.dp
         ),
         modifier = Modifier
-            .size(width = 200.dp, height = 150.dp),
+            .size(width = 200.dp, height = 170.dp),
         onClick = onClick
     ) {
         Column(
@@ -78,9 +78,10 @@ fun ConstellationItem(
                 .padding(10.dp)
                 .align(alignment = Alignment.CenterHorizontally)
         ) {
+            //val regex = Regex("file:///android_asset/constellationsPhotos/${imageName}\\d+\\.(png|jpg|jpeg)$", RegexOption.IGNORE_CASE)
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("file:///android_asset/$imageName")
+                    .data("file:///android_asset/constellationsPhotos/${imageName}.jpg")
                     .build(),
                 contentDescription = null,
 
@@ -92,7 +93,8 @@ fun ConstellationItem(
 
             Text(text = mainContent,
                 modifier = Modifier
-                    .align(alignment = Alignment.CenterHorizontally)
+                    .align(alignment = Alignment.CenterHorizontally),
+                textAlign = TextAlign.Center
             )
         }
     }
