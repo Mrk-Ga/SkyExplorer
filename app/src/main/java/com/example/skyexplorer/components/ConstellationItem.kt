@@ -43,7 +43,7 @@ fun ConstellationItem(
             defaultElevation = 6.dp
         ),
         modifier = Modifier
-            .size(width = 200.dp, height = 170.dp),
+            .size(width = 200.dp, height = 200.dp),
         onClick = { onClick(imageName) }
     ) {
         Column(
@@ -54,14 +54,15 @@ fun ConstellationItem(
             //val regex = Regex("file:///android_asset/constellationsPhotos/${imageName}\\d+\\.(png|jpg|jpeg)$", RegexOption.IGNORE_CASE)
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("file:///android_asset/constellationsPhotos/${imageName}.jpg")
+                    .data("file:///android_asset/constellationsPhotos/${imageName.replace(" ", "_")}.jpg")
                     .build(),
                 contentDescription = null,
 
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(130.dp)
                     .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center
             )
 
             Text(text = mainContent,

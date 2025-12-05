@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NavigateBefore
+import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.Card
@@ -45,15 +46,16 @@ fun PhotoGalleryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(40.dp)
             ){
                 BouncyButton(
                     onClick = onNavigateToConstellations
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBackIosNew,
-                        contentDescription = null,
-                        modifier = Modifier.size(40.dp)
+                        imageVector = Icons.AutoMirrored.Filled.NavigateBefore,
+                        contentDescription = "Go to previous screen",
+                        modifier = Modifier
+                            .size(50.dp)
                     )
 
 

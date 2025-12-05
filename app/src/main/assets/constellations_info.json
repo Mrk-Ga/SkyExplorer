@@ -86,7 +86,7 @@
     },
     {
       "polish": "Wolarz",
-      "latin": "Boötes",
+      "latin": "Bootes",
       "description": "Konstelacja rozpoznawalna dzięki jasnej gwieździe Arktur. Leży wiosną wysoko nad horyzontem. Bywa kojarzona z postacią pasterza lub oracza."
     },
     {
@@ -98,11 +98,6 @@
       "polish": "Herkules",
       "latin": "Hercules",
       "description": "Rozległa konstelacja o umiarkowanie jasnych gwiazdach. Zawiera słynną gromadę kulistą M13. Najlepiej widoczna latem."
-    },
-    {
-      "polish": "Smok Wodny",
-      "latin": "Hydra",
-      "description": "Najdłuższa konstelacja na niebie, choć w Polsce dobrze widoczna tylko częściowo. Reprezentuje mitycznego węża wodnego. Towarzyszą jej liczne mniejsze konstelacje."
     },
     {
       "polish": "Ryś",
@@ -133,21 +128,6 @@
       "polish": "Delfin",
       "latin": "Delphinus",
       "description": "Mała, ale wyrazista konstelacja przypominająca kształtem delfina. Znajduje się obok Altaira. Najlepiej widoczna latem."
-    },
-    {
-      "polish": "Strzelec (północna część)",
-      "latin": "Sagittarius (visible north part)",
-      "description": "Tylko część tej konstelacji jest widoczna z Polski. Leży na bogatym w obiekty rejonie Drogi Mlecznej. Kojarzona z centrum naszej galaktyki."
-    },
-    {
-      "polish": "Wężownik",
-      "latin": "Ophiuchus",
-      "description": "Rozległa konstelacja przedstawiająca mężczyznę trzymającego węża. Leży między Skorpionem a Herkulesem. Jest powiązana z rojem meteorów Ofiuchidów."
-    },
-    {
-      "polish": "Wąż",
-      "latin": "Serpens",
-      "description": "Jedyna konstelacja podzielona na dwie części: Głowę i Ogon Węża. Otacza Wężownika. Leży w bogatym regionie Drogi Mlecznej."
     }
   ]
 
