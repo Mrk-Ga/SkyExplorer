@@ -10,7 +10,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import com.example.skyexplorer.components.ConstellationInfo
-import com.example.skyexplorer.components.ConstellationItem
 
 
 @Composable
