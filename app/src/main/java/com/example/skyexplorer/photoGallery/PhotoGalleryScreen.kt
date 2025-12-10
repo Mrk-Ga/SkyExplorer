@@ -98,7 +98,10 @@ fun PhotoGalleryScreen(
         ){
 
             item{
-                PhotoPager(filteredPhotos, constellationName)
+                PhotoPager(filteredPhotos, constellationName,
+                    onDeletePhoto = {
+                    viewModel.deletePhoto(it)
+                })
             }
 
             item{
