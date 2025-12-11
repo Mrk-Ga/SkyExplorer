@@ -90,6 +90,7 @@ fun SkyMapScreen(
     val constellations by viewModel.constellations.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.loadConstellations()
+        Log.d("SCREEN LOG", constellations.size.toString())
     }
 
     Scaffold(

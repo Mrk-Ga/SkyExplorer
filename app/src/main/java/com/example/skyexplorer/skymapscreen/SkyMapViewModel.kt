@@ -23,9 +23,9 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
-data class SkyUiState  constructor(
+data class SkyUiState (
     val stars: List<Star> = emptyList(),
-    //val constellations: List<Constellation> = emptyList(),
+    val constellations: List<Constellation> = emptyList(),
     val lat: Double? = null,
     val lon: Double? = null,
     val timeUtc: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC),
@@ -37,8 +37,8 @@ data class SkyUiState  constructor(
 @RequiresApi(Build.VERSION_CODES.O)
 class SkyMapViewModel(application: Application) : AndroidViewModel(application) {
 
-    //private val _uiState = MutableStateFlow(SkyMapUiState())
-    //val uiState: StateFlow<SkyMapUiState> = _uiState
+    private val _uiState = MutableStateFlow(SkyMapUiState(false, false))
+    val uiState: StateFlow<SkyMapUiState> = _uiState
 
     private val model = SkyMapModel()
 
@@ -49,7 +49,7 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
 
     // Cache dla surowych danych z JSON, żeby nie czytać pliku w kółko
     private var allStarsCache: List<Star>? = null
-/*
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun handleIntent(intent: SkyMapIntent) {
         when (intent) {
@@ -62,7 +62,7 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
- */
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getTime(): ZonedDateTime {
@@ -139,7 +139,7 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     fun loadStars() {
         viewModelScope.launch {
-            //_uiState.value = _uiState.value.copy(loading = true)
+            _uiState.value = _uiState.value.copy(loading = true)
 
             try {
                 val result = createVisibleStars()
@@ -149,7 +149,7 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
             } catch (e: Exception) {
                 Log.e("SkyMapViewModel", "Błąd generowania gwiazd: ${e.message}")
             } finally {
-                //_uiState.value = _uiState.value.copy(loading = false)
+                _uiState.value = _uiState.value.copy(loading = false)
             }
         }
     }
@@ -158,12 +158,21 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
     suspend fun loadConstellations(): List<Constellation> = withContext(Dispatchers.IO) {
         try {
             val context = getApplication<Application>().applicationContext
+            // Upewnij się, że nazwa pliku jest poprawna!
             val json = context.assets.open("constellations_lines.json")
                 .bufferedReader()
                 .use { it.readText() }
-            Json.decodeFromString(json)
+
+            val result = Json.decodeFromString<List<Constellation>>(json)
+            Log.d("CONST_DEBUG", "Załadowano pomyślnie: ${result.size} konstelacji")
+            _constellations.value = result
+            return@withContext result
+
         } catch (e: Exception) {
-            emptyList()
+            // TO JEST KLUCZOWE: Zobaczysz, dlaczego nie działa
+            Log.e("CONST_DEBUG", "Błąd wczytywania konstelacji: ${e.message}")
+            e.printStackTrace()
+            return@withContext emptyList()
         }
     }
 }

@@ -10,6 +10,5 @@ sealed class SkyMapIntent{
 
 data class SkyMapUiState(
     val hasPermission: Boolean = false,
-    val webUrl: String = "https://stellarium-web.org",
     val loading: Boolean
 )
