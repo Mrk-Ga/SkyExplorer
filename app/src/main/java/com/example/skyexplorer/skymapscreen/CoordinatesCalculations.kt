@@ -5,62 +5,69 @@ import androidx.annotation.RequiresApi
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import kotlin.math.*
-
 data class HorizontalCoordinates(val alt: Double, val az: Double)
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun raDecToAltAz(
-    raHours: Double,
+    raDeg: Double,
     decDeg: Double,
     latDeg: Double,
     lonDeg: Double,
     dateTime: ZonedDateTime
 ): HorizontalCoordinates {
 
-    val ra = Math.toRadians(raHours * 15.0)
+    val ra = Math.toRadians(raDeg)
     val dec = Math.toRadians(decDeg)
     val lat = Math.toRadians(latDeg)
 
-    var lst = localSiderealTime(dateTime, lonDeg)
+    // Obliczamy czas gwiazdowy (LST) w radianach
+    val lst = localSiderealTime(dateTime, lonDeg)
 
+    // Kąt godzinny (Hour Angle)
     var ha = lst - ra
-    ha = ((ha % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)
 
+    // Normalizacja HA do przedziału (-PI, PI) lub (0, 2PI)
+    ha = (ha + 2 * Math.PI) % (2 * Math.PI)
+
+    // 1. Obliczenie Wysokości (Altitude)
     val sinAlt = sin(dec) * sin(lat) + cos(dec) * cos(lat) * cos(ha)
     val alt = asin(sinAlt)
 
+    // 2. Obliczenie Azymutu (Azimuth)
+    // Wzór klasyczny daje azymut liczony od Południa (0=S, 90=W...)
     val y = sin(ha)
     val x = cos(ha) * sin(lat) - tan(dec) * cos(lat)
-    var az = atan2(y, x)
-    if (az < 0) az += 2 * Math.PI
 
-    var azDeg = Math.toDegrees(az)
+    val azSouth = atan2(y, x)
 
-    // POPRAWKA SYSTEMU AZYMUTU
-    azDeg = (azDeg + 180) % 360
-    azDeg = (360 - azDeg) % 360
+    // Konwersja na azymut nawigacyjny (0=N, 90=E, 180=S, 270=W)
+    // Dodajemy PI (180 stopni), aby przenieść 0 z S na N
+    var azNorth = azSouth + Math.PI
+
+    // Normalizacja do 0..2PI
+    azNorth = (azNorth + 2 * Math.PI) % (2 * Math.PI)
 
     return HorizontalCoordinates(
-        Math.toDegrees(alt),
-        azDeg
+        alt = Math.toDegrees(alt),
+        az = Math.toDegrees(azNorth)
     )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun localSiderealTime(time: ZonedDateTime, longitudeDeg: Double): Double {
+    val jd = getJulianDate(time)
+    val d = jd - 2451545.0
+    val T = d / 36525.0
 
-    // PRZELICZAMY CZAS NA UTC
-    val utcTime = time.withZoneSameInstant(java.time.ZoneOffset.UTC)
+    // GMST (Greenwich Mean Sidereal Time) - precyzyjny wzór IAU
+    var gmst = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T - (T * T * T) / 38710000.0
 
-    val jd = getJulianDate(utcTime)
-    val t = (jd - 2451545.0) / 36525.0
+    // Normalizacja do 0..360
+    gmst %= 360.0
+    if (gmst < 0) gmst += 360.0
 
-    var lst = 280.46061837 +
-            360.98564736629 * (jd - 2451545) +
-            0.000387933 * t * t -
-            t * t * t / 38710000 +
-            longitudeDeg
-
+    // LST = GMST + Longitude
+    var lst = gmst + longitudeDeg
     lst %= 360.0
     if (lst < 0) lst += 360.0
 
@@ -69,16 +76,14 @@ fun localSiderealTime(time: ZonedDateTime, longitudeDeg: Double): Double {
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun getJulianDate(time: ZonedDateTime): Double {
-    // czas UTC
     val utc = time.withZoneSameInstant(ZoneOffset.UTC)
 
-    val year = utc.year
-    val month = utc.monthValue
-    val day = utc.dayOfMonth
-    val hour = utc.hour + utc.minute / 60.0 + utc.second / 3600.0
+    var Y = utc.year
+    var M = utc.monthValue
+    val D = utc.dayOfMonth
 
-    var Y = year
-    var M = month
+    // Ułamek dnia (godziny, minuty, sekundy)
+    val dayFraction = (utc.hour + utc.minute / 60.0 + utc.second / 3600.0) / 24.0
 
     if (M <= 2) {
         Y -= 1
@@ -88,9 +93,9 @@ fun getJulianDate(time: ZonedDateTime): Double {
     val A = floor(Y / 100.0)
     val B = 2 - A + floor(A / 4.0)
 
-    val JD0 = floor(365.25 * (Y + 4716)) +
+    val JD = floor(365.25 * (Y + 4716)) +
             floor(30.6001 * (M + 1)) +
-            day + B - 1524.5
+            D + B - 1524.5
 
-    return JD0 + hour / 24.0
+    return JD + dayFraction
 }

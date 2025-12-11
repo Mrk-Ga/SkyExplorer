@@ -87,6 +87,11 @@ fun SkyMapScreen(
         viewModel.loadStars()
     }
 
+    val constellations by viewModel.constellations.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.loadConstellations()
+    }
+
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
@@ -110,7 +115,7 @@ fun SkyMapScreen(
             if (stars.isEmpty()) {
                 Text("Wczytywanie nieba...", modifier = Modifier.padding(100.dp))
             } else {
-                StarMap(stars, viewModel.loadConstellations())
+                StarMap(stars, constellations)
             }
 
 

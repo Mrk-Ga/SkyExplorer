@@ -1,9 +1,9 @@
 
 [
-  { "name": "HD 5394",  "ra": 0.152, "dec": 59.150, "magnitude": 2.27, "sptype": "F2III" },
-  { "name": "HD 8886",  "ra": 0.675, "dec": 56.537, "magnitude": 2.24, "sptype": "K0III" },
-  { "name": "HD 10332", "ra": 1.430, "dec": 60.235, "magnitude": 2.23, "sptype": "B2IV" },
-  { "name": "HD 12882", "ra": 2.103, "dec": 59.150, "magnitude": 2.65, "sptype": "A0III" },
-  { "name": "HD 886",   "ra": 0.605, "dec": 63.670, "magnitude": 3.35, "sptype": "B3IV" }
+  { "id":11111, "name": "HD 5394",  "ra": 0.152, "dec": 59.150, "magnitude": 2.27, "sptype": "F2III" },
+  { "id":11112,"name": "HD 8886",  "ra": 0.675, "dec": 56.537, "magnitude": 2.24, "sptype": "K0III" },
+  { "id":11113,"name": "HD 10332", "ra": 1.430, "dec": 60.235, "magnitude": 2.23, "sptype": "B2IV" },
+  { "id":11114,"name": "HD 12882", "ra": 2.103, "dec": 59.150, "magnitude": 2.65, "sptype": "A0III" },
+  { "id":11115,"name": "HD 886",   "ra": 0.605, "dec": 63.670, "magnitude": 3.35, "sptype": "B3IV" }
 ]
 

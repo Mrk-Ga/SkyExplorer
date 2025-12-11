@@ -1,7 +1,5 @@
 package com.example.skyexplorer.skymapscreen
 
-import android.content.Context
-
 sealed class SkyMapIntent{
     object NavigateToCamera : SkyMapIntent()
     object NavigateToConstellations: SkyMapIntent()
@@ -12,5 +10,6 @@ sealed class SkyMapIntent{
 
 data class SkyMapUiState(
     val hasPermission: Boolean = false,
-    val webUrl: String = "https://stellarium-web.org"
+    val webUrl: String = "https://stellarium-web.org",
+    val loading: Boolean
 )
