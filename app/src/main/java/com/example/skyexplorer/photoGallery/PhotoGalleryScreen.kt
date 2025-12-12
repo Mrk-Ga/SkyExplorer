@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skyexplorer.components.BouncyButton
+import com.example.skyexplorer.photoShare.ShareButton
 //import com.example.skyexplorer.components.BouncyButton
 import com.example.skyexplorer.ui.theme.*
 
@@ -168,7 +169,16 @@ fun PhotoGalleryScreen(
                 }
 
             }
+            item{
+                if(filteredPhotos.size > 0){
+                    //Log.d("SHARE", "exists=${file.exists()}")
+                    Log.d("SHARE", "uri=${filteredPhotos[0].uri}")
+                    ShareButton(imagePath = filteredPhotos[0].uri)
+                }
+
+            }
         }
+
 
 
 

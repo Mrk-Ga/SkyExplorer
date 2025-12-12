@@ -3,6 +3,7 @@ package com.example.skyexplorer.photoGallery
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,6 +30,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.skyexplorer.PhotoEntity
+import com.example.skyexplorer.photoShare.ShareButton
 import com.example.skyexplorer.ui.theme.DarkGray
 
 @Composable
@@ -110,23 +112,26 @@ fun PhotoPager(
         val photo = photos[page]
 
 
+            Image(
+                painter = rememberAsyncImagePainter(photo.uri),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onLongPress = {
+                                selectedPhoto = photo
+                                showDialog = true
+                            }
+                        )
+                    },
+                contentScale = ContentScale.Crop
+            )
 
-        Image(
-            painter = rememberAsyncImagePainter(photo.uri),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onLongPress = {
-                            selectedPhoto = photo
-                            showDialog = true
-                        }
-                    )
-                },
-            contentScale = ContentScale.Crop
-        )
+
+
+
     }
 }
 
