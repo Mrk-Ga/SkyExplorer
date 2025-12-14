@@ -5,35 +5,32 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NavigateBefore
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -59,13 +56,18 @@ fun PhotoGalleryScreen(
 
     val photoInfo = viewModel.loadConstellationsInfo(constellationName)
 
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { filteredPhotos.size }
+    )
+
 
 
     Log.d("PHOTO INFORMATIONS", photoInfo.toString())
 
     Scaffold(
         bottomBar = {
-            Box(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(40.dp)
@@ -83,9 +85,32 @@ fun PhotoGalleryScreen(
                         modifier = Modifier
                             .size(50.dp)
                     )
-
-
                 }
+
+                Spacer(
+                    modifier = Modifier
+                        .width(150.dp)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .size(50.dp),
+                    contentAlignment = Alignment.CenterEnd,
+
+
+                ) {
+                    if (filteredPhotos.isNotEmpty()) {
+                        //Log.d("SHARE", "exists=${file.exists()}")
+                        //Log.d("SHARE", "uri=${filteredPhotos[0].uri}")
+                        ShareButton(
+                            imagePath = filteredPhotos[pagerState.currentPage].uri,
+                            viewModel
+                        )
+                    }
+                }
+
+
+
             }
         }
     ) { innerPadding ->
@@ -94,29 +119,34 @@ fun PhotoGalleryScreen(
 
         LazyColumn (
             modifier = Modifier
-                .padding(top=30.dp)
+                .padding(top=30.dp),
+            contentPadding = PaddingValues(
+                    //top = innerPadding.calculateTopPadding(),
+                    bottom = innerPadding.calculateBottomPadding()
+            )
 
         ){
 
             item{
                 PhotoPager(filteredPhotos, constellationName,
                     onDeletePhoto = {
-                    viewModel.deletePhoto(it)
-                })
+                        viewModel.deletePhoto(it)
+                    },
+                    pagerState = pagerState
+
+                )
             }
 
             item{
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 20.dp, start = 20.dp),
+                        .padding(top = 20.dp),
                         //.size(height = 300.dp, width = 600.dp)
 
                     contentAlignment = Alignment.Center,
 
                 ){
-                    //val Text = photoInfo.polish + " (lat. " + photoInfo.latin+ ")"
-
                     Column(
                         modifier = Modifier
                             .padding(5.dp)
@@ -144,6 +174,7 @@ fun PhotoGalleryScreen(
                 }
             }
 
+
             item{
                 Box(
                     modifier = Modifier
@@ -169,14 +200,7 @@ fun PhotoGalleryScreen(
                 }
 
             }
-            item{
-                if(filteredPhotos.size > 0){
-                    //Log.d("SHARE", "exists=${file.exists()}")
-                    Log.d("SHARE", "uri=${filteredPhotos[0].uri}")
-                    ShareButton(imagePath = filteredPhotos[0].uri)
-                }
 
-            }
         }
 
 

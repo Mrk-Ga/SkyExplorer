@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -32,11 +33,13 @@ import coil.request.ImageRequest
 import com.example.skyexplorer.PhotoEntity
 import com.example.skyexplorer.photoShare.ShareButton
 import com.example.skyexplorer.ui.theme.DarkGray
+import com.example.skyexplorer.ui.theme.StarBlue
 
 @Composable
 fun PhotoPager(
     photos: List<PhotoEntity>,
     constellationName: String,
+    pagerState: PagerState,
     onDeletePhoto: (PhotoEntity) ->Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
@@ -64,7 +67,7 @@ fun PhotoPager(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable { showDialog = false },
-                    color = DarkGray
+                    color = StarBlue
                 )
             },
             title = { Text("Usunąć zdjęcie?") },
@@ -96,10 +99,7 @@ fun PhotoPager(
     }
 
     // Pager state
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = { photos.size }
-    )
+
 
     HorizontalPager(
         state = pagerState,
