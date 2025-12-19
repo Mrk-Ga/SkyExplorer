@@ -1,9 +1,17 @@
 import android.Manifest
 import android.app.Application
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
@@ -21,6 +29,9 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.sin
 
 @RequiresApi(Build.VERSION_CODES.O)
 data class SkyUiState (
@@ -150,7 +161,7 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
     suspend fun loadConstellations(): List<Constellation> = withContext(Dispatchers.IO) {
         try {
             val context = getApplication<Application>().applicationContext
-            val json = context.assets.open("constellations_test.json")
+            val json = context.assets.open("constellations_lines.json")
                 .bufferedReader()
                 .use { it.readText() }
 
@@ -165,4 +176,95 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
             return@withContext emptyList()
         }
     }
+
+    data class ViewDirection(
+        val azimuth: Double = 0.0,   // 0–360
+        val altitude: Double = 45.0  // 0–90
+    )
+
+    var viewDirection by mutableStateOf(ViewDirection())
+        private set
+
+    private lateinit var sensorManager: SensorManager
+    private var rotationSensor: Sensor? = null
+
+    private val rotationMatrix = FloatArray(9)
+    private val orientationAngles = FloatArray(3)
+
+    fun startSensors(context: Context) {
+        sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+
+        rotationSensor?.let {
+            sensorManager.registerListener(
+                sensorListener,
+                it,
+                SensorManager.SENSOR_DELAY_GAME
+            )
+        }
+    }
+
+    fun stopSensors() {
+        sensorManager.unregisterListener(sensorListener)
+    }
+
+    private val sensorListener = object : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent) {
+
+            SensorManager.getRotationMatrixFromVector(
+                rotationMatrix,
+                event.values
+            )
+
+            SensorManager.getOrientation(rotationMatrix, orientationAngles)
+
+            val azimuthRad = orientationAngles[0]
+            val pitchRad = orientationAngles[1]
+
+            val azimuthDeg =
+                (Math.toDegrees(azimuthRad.toDouble()) + 360) % 360
+
+            val pitchDeg =
+                Math.toDegrees(pitchRad.toDouble())
+
+            val newAlt = (-pitchDeg).coerceIn(0.0, 90.0)
+
+            viewDirection = ViewDirection(
+                azimuth = smoothAngle(viewDirection.azimuth, azimuthDeg),
+                altitude = smooth(viewDirection.altitude, newAlt)
+            )
+        }
+
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+    }
+
+    private fun smooth(old: Double, new: Double, alpha: Double = 0.1): Double {
+        return old + alpha * (new - old)
+    }
+
+    private fun smoothAngle(old: Double, new: Double, alpha: Double = 0.1): Double {
+        var diff = (new - old + 540) % 360 - 180
+        return (old + alpha * diff + 360) % 360
+    }
+
+    val fieldOfView = 70.0
+
+
+}
+
+fun angularDistance(
+    az1: Double, alt1: Double,
+    az2: Double, alt2: Double
+): Double {
+    val a1 = Math.toRadians(az1)
+    val a2 = Math.toRadians(az2)
+    val z1 = Math.toRadians(alt1)
+    val z2 = Math.toRadians(alt2)
+
+    return Math.toDegrees(
+        acos(
+            sin(z1) * sin(z2) +
+                    cos(z1) * cos(z2) * cos(a1 - a2)
+        )
+    )
 }

@@ -1,6 +1,9 @@
 package com.example.skyexplorer.skymapscreen
 
+import SkyMapViewModel
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
@@ -9,20 +12,18 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import angularDistance
+import kotlin.math.min
 import kotlin.math.sin
 import kotlin.math.cos
-import kotlin.math.pow
-import kotlin.math.tan
 
 // ---- MODELE ----
 
@@ -42,43 +43,45 @@ data class Star(
 data class Constellation(
     val id: String,
     val name: String,
-    //val description: String,
-    //val stars: List<String>,
     val segments: List<List<Int>>
 )
 
-
 // ---- RYSOWANIE MAPY NIEBA ----
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StarMap(
     stars: List<Star>,
+    viewModel: SkyMapViewModel,
     constellations: List<Constellation>
 ) {
 
-    // --- Diagnostyka przy wejściu ---
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.startSensors(context)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.stopSensors()
+        }
+    }
+
+    // --- Diagnostyka ---
     LaunchedEffect(stars.size, constellations.size) {
         Log.d("STAR_MAP_DEBUG", "Liczba gwiazd: ${stars.size}")
         Log.d("STAR_MAP_DEBUG", "Liczba konstelacji: ${constellations.size}")
-        if (constellations.isNotEmpty()) {
-            Log.d("STAR_MAP_DEBUG", "Przykładowy segment: ${constellations.first().segments.firstOrNull()}")
-        }
     }
-    // --------------------------------
-    val OffsetSaver = run {
-        androidx.compose.runtime.saveable.Saver<Offset, List<Float>>(
-            save = { listOf(it.x, it.y) },
-            restore = { Offset(it[0], it[1]) }
-        )
-    }
-    var offset by rememberSaveable(stateSaver = OffsetSaver) {
-        mutableStateOf(Offset.Zero)
-    }
+
     var scale by rememberSaveable { mutableStateOf(1f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+
 
     Canvas(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0B0F19)) // Nieco ładniejszy, głęboki granat
+            .background(Color(0xFF0B0F19))
             .pointerInput(Unit) {
                 detectTransformGestures { _, pan, zoom, _ ->
                     offset += pan
@@ -87,223 +90,122 @@ fun StarMap(
             }
     ) {
 
-        val center = Offset(size.width / 2 + offset.x, size.height / 2 + offset.y)
-        // Zmniejszyłem nieco promień, by był margines
-        val radius = (size.minDimension / 2 * 0.95f) * scale
+        val centerAz = viewModel.viewDirection.azimuth
+        val centerAlt = viewModel.viewDirection.altitude
+        val halfFov = viewModel.fieldOfView / 2
 
-        // Okrąg horyzontu (clipping)
-        val circularClip = Path().apply {
-            addOval(Rect(center = center, radius = radius))
-        }
+        // 📌 Telefon skierowany pod horyzont → nic nie rysujemy
+        //if (centerAlt <= 0.0) return@Canvas
+
+        val centerX = size.width / 2 + offset.x
+        val centerY = size.height / 2 + offset.y
+        val halfWidth = size.width / 2
+        val halfHeight = size.height / 2
 
         val positions = mutableMapOf<Int, Offset>()
 
-        // Rysujemy tło horyzontu (opcjonalnie)
-        drawCircle(
-            color = Color(0xFF111520),
-            radius = radius,
-            center = center
-        )
+        // ---- RYSOWANIE GWIAZD ----
 
-        clipPath(circularClip) {
-            stars.forEach { star ->
-                val alt = star.alt ?: return@forEach
-                val az = star.az ?: return@forEach // Azymut: 0=N, 90=E, 180=S, 270=W
+        stars.forEach { star ->
+            val alt = star.alt ?: return@forEach
+            val az = star.az ?: return@forEach
 
-                // Tylko gwiazdy nad horyzontem
-                if (alt <= 0) return@forEach
+            //if (alt < 0) return@forEach
 
-                // --- KLUCZOWA POPRAWKA ---
-                // Mapa nieba jest "widokiem od dołu". Jeśli Północ jest na górze (0°),
-                // to Wschód (90°) musi być po LEWEJ stronie ekranu.
-                // Standardowa trygonometria (sin) dla kąta 90° daje +1 (Prawo).
-                // Dlatego musimy odwrócić azymut (360 - az).
+            val dist = angularDistance(
+                az, alt,
+                centerAz, centerAlt
+            )
 
-                val adjustedAz = (360.0 - az) % 360.0
+            if (dist > halfFov) return@forEach
 
-                val azRad = Math.toRadians(adjustedAz)
-                val zenithAngle = Math.toRadians(90.0 - alt)
+            val dAz = ((az - centerAz + 540) % 360) - 180
+            val dAlt = alt - centerAlt
 
-                // Projekcja Stereograficzna
-                // r = R * tan(z / 2) -> zachowuje kąty, dobre dla konstelacji
-                val r = radius * tan(zenithAngle / 2.0)
+            val x = centerX + (dAz / halfFov) * halfWidth * scale
+            val y = centerY - (dAlt / halfFov) * halfHeight * scale
 
-                // Pozycja (X=sin, Y=-cos bo 0 jest na górze)
-                val x = center.x + (r * sin(azRad)).toFloat()
-                val y = center.y - (r * cos(azRad)).toFloat()
+            val pos = Offset(x.toFloat(), y.toFloat())
+            positions[star.id] = pos
 
-                val pos = Offset(x, y)
-                positions[star.id] = pos   // tylko gwiazdy widoczne!
+            // ---- KOLOR GWIAZDY ----
+            val baseColor = when {
+                star.sptype.startsWith("O") -> Color(0xFF9BB0FF)
+                star.sptype.startsWith("B") -> Color(0xFFAABFFF)
+                star.sptype.startsWith("A") -> Color(0xFFCAD7FF)
+                star.sptype.startsWith("F") -> Color(0xFFF8F7FF)
+                star.sptype.startsWith("G") -> Color(0xFFFFF4E8)
+                star.sptype.startsWith("K") -> Color(0xFFFFE0B0)
+                star.sptype.startsWith("M") -> Color(0xFFFFC8A0)
+                else -> Color.White
+            }
 
-                // =================================================================
-                // NOWA SEKCJA OBLICZANIA KOLORU I ROZMIARU
-                // =================================================================
+            val magnitudeLimit = 6.5
+            val brightnessScore = (magnitudeLimit - star.magnitude).coerceAtLeast(0.2)
+            val baseSizeFactor = 2.0f * scale
+            val rawRadius = (baseSizeFactor * brightnessScore).toFloat()
+            val starRadius = rawRadius.coerceIn(1.5f * scale, 25f * scale)
 
-                // 1. Kolor (bez zmian, ale dla porządku wklejam całość)
-                val baseColor = when {
-                    star.sptype.startsWith("O") -> Color(0xFF9BB0FF) // Niebieskie
-                    star.sptype.startsWith("B") -> Color(0xFFAABFFF)
-                    star.sptype.startsWith("A") -> Color(0xFFCAD7FF) // Biało-niebieskie
-                    star.sptype.startsWith("F") -> Color(0xFFF8F7FF)
-                    star.sptype.startsWith("G") -> Color(0xFFFFF4E8) // Żółte (jak Słońce)
-                    star.sptype.startsWith("K") -> Color(0xFFFFE0B0) // Pomarańczowe
-                    star.sptype.startsWith("M") -> Color(0xFFFFC8A0) // Czerwone
-                    else -> Color.White
-                }
+            val intensity = (1.0 - (star.magnitude / magnitudeLimit))
+                .coerceIn(0.4, 1.0)
+                .toFloat()
 
-                // 2. Obliczanie rozmiaru w zależności od magnitudy
-                // Przyjmujemy granicę widoczności. Gwiazdy > 6.5 mag będą najmniejsze.
-                val magnitudeLimit = 6.5
+            val finalColor = baseColor.copy(alpha = intensity)
 
-                // Odwracamy skalę: im mniejsza magnitudo (jaśniejsza gwiazda),
-                // tym większy wynik 'brightnessScore'.
-                // coerceAtLeast(0.2) zapewnia minimalny rozmiar dla bardzo słabych gwiazd.
-                val brightnessScore = (magnitudeLimit - star.magnitude).coerceAtLeast(0.2)
-
-                // Bazowy mnożnik wielkości.
-                // Zwiększ wartość '2.0f', jeśli chcesz, aby WSZYSTKIE gwiazdy były większe.
-                // Mnożymy przez 'scale', aby gwiazdy rosły wraz z zoomem mapy.
-                val baseSizeFactor = 2.0f * scale
-
-                // Wstępny promień
-                val rawRadius = (baseSizeFactor * brightnessScore).toFloat()
-
-                // Ostateczne ograniczenie promienia (sztywne ramy).
-                // Min: 1.5px * scale (żeby zawsze było widać kropkę)
-                // Max: 25px * scale (żeby Syriusz czy planety nie były wielkimi plamami)
-                val starRadius = rawRadius.coerceIn(1.5f * scale, 25f * scale)
-
-
-                // 3. Obliczanie alfy (przezroczystości)
-                // Słabsze gwiazdy są nieco bardziej przezroczyste
-                val intensity = (1.0 - (star.magnitude / magnitudeLimit))
-                    .coerceIn(0.4, 1.0) // Min alpha 0.4, max 1.0
-                    .toFloat()
-
-                val finalColor = baseColor.copy(alpha = intensity)
-
-                // RYSOWANIE
-
-                // Poświata (większa i bardziej przejrzysta)
-                // Rysujemy ją tylko dla jaśniejszych gwiazd (np. jaśniejszych niż 3 mag),
-                // żeby nie robić "zupy" na ekranie przy dużej ilości słabych gwiazd.
-
-                if (star.magnitude < 3.0) {
-                    drawCircle(
-                        color = finalColor.copy(alpha = 0.15f),
-                        radius = starRadius * 1.8f, // Poświata 1.8x większa od jądra
-                        center = pos
-                    )
-                }
-
-
-
-                // Jądro gwiazdy
+            if (star.magnitude < 3.0) {
                 drawCircle(
-                    color = finalColor,
-                    radius = starRadius,
+                    color = finalColor.copy(alpha = 0.15f),
+                    radius = starRadius * 1.8f,
                     center = pos
                 )
             }
 
-            // ---- RYSOWANIE KONSTELACJI ----
-
-/*
-            val constellationStroke = Stroke(
-                width = 1.5f * scale,
-                pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+            drawCircle(
+                color = finalColor,
+                radius = starRadius,
+                center = pos
             )
+        }
 
- */
-            val constellationColor = Color.White.copy(alpha = 0.35f)
+        // ---- RYSOWANIE KONSTELACJI ----
 
-            constellations.forEach { constellation ->
-                val path = Path()
-                var isPathEmpty = true
+        val constellationColor = Color.White.copy(alpha = 0.35f)
 
-                val allStarsVisible = constellation.segments
-                    .flatten()
-                    .distinct()
-                    .all { starId -> positions.containsKey(starId) }
+        constellations.forEach { constellation ->
+            val path = Path()
+            var isPathEmpty = true
 
-                if (!allStarsVisible) return@forEach
+            val allStarsVisible = constellation.segments
+                .flatten()
+                .distinct()
+                .all { positions.containsKey(it) }
 
-                constellation.segments.forEach { segment ->
-                    // Segment to teraz lista Intów: [54061, 53910]
-                    if (segment.size >= 2) {
-                        val idA = segment[0]
-                        val idB = segment[1]
+            if (!allStarsVisible) return@forEach
 
-                        // Pobieramy z mapy po ID
-                        val posA = positions[idA]
-                        val posB = positions[idB]
+            constellation.segments.forEach { segment ->
+                if (segment.size >= 2) {
+                    val posA = positions[segment[0]]
+                    val posB = positions[segment[1]]
 
-                        if (posA != null && posB != null) {
-                            path.moveTo(posA.x, posA.y)
-                            path.lineTo(posB.x, posB.y)
-                            isPathEmpty = false
-                        }else {
-                            isPathEmpty = true
-                        }
+                    if (posA != null && posB != null) {
+                        path.moveTo(posA.x, posA.y)
+                        path.lineTo(posB.x, posB.y)
+                        isPathEmpty = false
                     }
                 }
-
-                if (!isPathEmpty) {
-                    drawPath(
-                        path = path,
-                        color = constellationColor,
-                        style = Stroke(
-                            width = 2.dp.toPx(),
-                            cap = StrokeCap.Round,
-                            join = StrokeJoin.Round
-                        )
-                    )
-                }
-
-
             }
 
-
-
-        }
-
-
-
-        // Ramka horyzontu
-        drawCircle(
-            color = Color(0xFF445577),
-            radius = radius,
-            center = center,
-            style = Stroke(width = 4f)
-        )
-
-        // ---- KIERUNKI ŚWIATA (N, S, E, W) ----
-        val textPaint = android.graphics.Paint().apply {
-            color = android.graphics.Color.parseColor("#AAAAAA")
-            textSize = 40f * scale.coerceIn(0.8f, 1.5f)
-            textAlign = android.graphics.Paint.Align.CENTER
-            typeface = android.graphics.Typeface.DEFAULT_BOLD
-        }
-
-        val directions = listOf(
-            "N" to 0.0,
-            "E" to 90.0,
-            "S" to 180.0,
-            "W" to 270.0
-        )
-
-        directions.forEach { (label, az) ->
-            // Tutaj też stosujemy odbicie lustrzane dla etykiet!
-            val adjustedAz = (360.0 - az) % 360.0
-            val azRad = Math.toRadians(adjustedAz)
-
-            // Tekst rysujemy nieco poza okręgiem
-            val textR = radius + (30f * scale)
-
-            val x = center.x + (textR * sin(azRad)).toFloat()
-            val y = center.y - (textR * cos(azRad)).toFloat() + (textPaint.textSize / 3)
-
-            drawContext.canvas.nativeCanvas.drawText(label, x, y, textPaint)
+            if (!isPathEmpty) {
+                drawPath(
+                    path = path,
+                    color = constellationColor,
+                    style = Stroke(
+                        width = 2.dp.toPx(),
+                        cap = StrokeCap.Round,
+                        join = StrokeJoin.Round
+                    )
+                )
+            }
         }
     }
 }

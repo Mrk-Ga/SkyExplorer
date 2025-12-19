@@ -116,7 +116,7 @@ fun SkyMapScreen(
             if (stars.isEmpty()) {
                 Text("Wczytywanie nieba...", modifier = Modifier.padding(100.dp))
             } else {
-                StarMap(stars, constellations)
+                StarMap(stars, viewModel,constellations)
             }
 
 
