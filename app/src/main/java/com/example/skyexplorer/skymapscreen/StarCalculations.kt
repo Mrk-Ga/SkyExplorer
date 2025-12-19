@@ -12,6 +12,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.nativeCanvas
@@ -205,21 +207,26 @@ fun StarMap(
             }
 
             // ---- RYSOWANIE KONSTELACJI ----
-            // Rysujemy je TERAZ, korzystając z gotowej mapy 'positions'.
-            // Dzięki temu nie musimy szukać gwiazd w liście 'stars' w każdej klatce.
 
-            // ---- RYSOWANIE KONSTELACJI (Zaktualizowane) ----
-            /*
-
+/*
             val constellationStroke = Stroke(
                 width = 1.5f * scale,
                 pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
             )
+
+ */
             val constellationColor = Color.White.copy(alpha = 0.35f)
 
             constellations.forEach { constellation ->
                 val path = Path()
                 var isPathEmpty = true
+
+                val allStarsVisible = constellation.segments
+                    .flatten()
+                    .distinct()
+                    .all { starId -> positions.containsKey(starId) }
+
+                if (!allStarsVisible) return@forEach
 
                 constellation.segments.forEach { segment ->
                     // Segment to teraz lista Intów: [54061, 53910]
@@ -236,11 +243,7 @@ fun StarMap(
                             path.lineTo(posB.x, posB.y)
                             isPathEmpty = false
                         }else {
-                            // LOGOWANIE BRAKUJĄCEJ GWIAZDY (Tylko dla pierwszej konstelacji, żeby nie spamować)
-                            if (constellation.id == "UMa" || constellation.id == "Ori") {
-                                if (posA == null) Log.w("STAR_MAP_DEBUG", "Brak gwiazdy ID: $idA w konstelacji ${constellation.name}")
-                                if (posB == null) Log.w("STAR_MAP_DEBUG", "Brak gwiazdy ID: $idB w konstelacji ${constellation.name}")
-                            }
+                            isPathEmpty = true
                         }
                     }
                 }
@@ -249,13 +252,17 @@ fun StarMap(
                     drawPath(
                         path = path,
                         color = constellationColor,
-                        style = constellationStroke
+                        style = Stroke(
+                            width = 2.dp.toPx(),
+                            cap = StrokeCap.Round,
+                            join = StrokeJoin.Round
+                        )
                     )
                 }
 
 
             }
-*/
+
 
 
         }

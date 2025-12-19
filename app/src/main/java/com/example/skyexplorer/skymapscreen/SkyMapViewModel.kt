@@ -47,7 +47,6 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
     val stars: StateFlow<List<Star>> = _stars
     val constellations: StateFlow<List<Constellation>> = _constellations
 
-    // Cache dla surowych danych z JSON, żeby nie czytać pliku w kółko
     private var allStarsCache: List<Star>? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -105,9 +104,6 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
 
         // 4. Obliczenia
         sourceStars.forEach { star ->
-            // Kopiujemy obiekt gwiazdy, żeby nie modyfikować cache (ważne przy wielokrotnym odświeżaniu!)
-            // Jeśli Star jest 'data class', użyj copy(). Jeśli nie, musisz stworzyć nową instancję.
-            // Zakładam, że Star to data class.
             val currentStar = star.copy()
 
             // --- KLUCZOWA POPRAWKA: USUNIĘTO * 15.0 ---
@@ -123,14 +119,11 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
             currentStar.alt = cords.alt
             currentStar.az = cords.az
 
-            // Filtrowanie - opcjonalnie możesz zwiększyć limit, jeśli dodałeś obsługę rozmiarów
-            // Jeśli magnitude < 6.0, zobaczymy więcej gwiazd (bliżej rzeczywistości)
             if (currentStar.magnitude < 6.0) {
                 calculatedStars.add(currentStar)
             }
         }
 
-        // Sortowanie, żeby najpierw rysować ciemne, a na wierzchu jasne gwiazdy (opcjonalne)
         return@withContext calculatedStars.sortedByDescending { it.magnitude }
     }
 
@@ -154,11 +147,9 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    // Ładowanie konstelacji też warto przenieść na IO
     suspend fun loadConstellations(): List<Constellation> = withContext(Dispatchers.IO) {
         try {
             val context = getApplication<Application>().applicationContext
-            // Upewnij się, że nazwa pliku jest poprawna!
             val json = context.assets.open("constellations_lines.json")
                 .bufferedReader()
                 .use { it.readText() }
@@ -169,7 +160,6 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
             return@withContext result
 
         } catch (e: Exception) {
-            // TO JEST KLUCZOWE: Zobaczysz, dlaczego nie działa
             Log.e("CONST_DEBUG", "Błąd wczytywania konstelacji: ${e.message}")
             e.printStackTrace()
             return@withContext emptyList()
