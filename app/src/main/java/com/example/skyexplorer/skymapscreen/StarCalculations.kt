@@ -20,12 +20,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import angularDistance
-import kotlin.math.min
-import kotlin.math.sin
-import kotlin.math.cos
-
-// ---- MODELE ----
+import kotlin.math.*
 
 @kotlinx.serialization.Serializable
 data class Star(
@@ -46,6 +41,122 @@ data class Constellation(
     val segments: List<List<Int>>
 )
 
+/**
+ * Prosty wektor 3D (bez zależności od OpenGL).
+ */
+private data class Vec3(val x: Double, val y: Double, val z: Double)
+
+/**
+ * Konwersja (az, alt) -> wektor jednostkowy na sferze.
+ *
+ * Założenia osi (układ świata):
+ * - +Y = "góra" (zenit)
+ * - +Z = "północ" (przód, gdy az=0)
+ * - +X = "wschód" (prawo, gdy az=90)
+ *
+ * az w stopniach: 0=N, 90=E, 180=S, 270=W
+ * alt w stopniach: -90..+90
+ */
+private fun altAzToUnitVector(azDeg: Double, altDeg: Double): Vec3 {
+    val az = Math.toRadians(azDeg)
+    val alt = Math.toRadians(altDeg)
+
+    val cosAlt = cos(alt)
+    val x = cosAlt * sin(az)
+    val y = sin(alt)
+    val z = cosAlt * cos(az)
+    return Vec3(x, y, z)
+}
+
+/**
+ * Obrót wektora wokół osi Y (yaw) — obrót w poziomie (azymut).
+ */
+private fun rotateY(v: Vec3, degrees: Double): Vec3 {
+    val a = Math.toRadians(degrees)
+    val ca = cos(a)
+    val sa = sin(a)
+    // [ ca 0 sa ] [x]
+    // [  0 1  0 ] [y]
+    // [-sa 0 ca ] [z]
+    return Vec3(
+        x = v.x * ca + v.z * sa,
+        y = v.y,
+        z = -v.x * sa + v.z * ca
+    )
+}
+
+/**
+ * Obrót wektora wokół osi X (pitch) — patrzenie w górę/dół.
+ * Dodatni pitch: "w dół" (zgodnie z typową konwencją kamery), dlatego zwykle podajemy -alt.
+ */
+private fun rotateX(v: Vec3, degrees: Double): Vec3 {
+    val a = Math.toRadians(degrees)
+    val ca = cos(a)
+    val sa = sin(a)
+    // [1  0   0] [x]
+    // [0 ca -sa] [y]
+    // [0 sa  ca] [z]
+    return Vec3(
+        x = v.x,
+        y = v.y * ca - v.z * sa,
+        z = v.y * sa + v.z * ca
+    )
+}
+
+/**
+ * Świat -> Kamera: ustawiamy kamerę tak, aby patrzyła w kierunku (centerAz, centerAlt).
+ *
+ * Robimy to jako obrót odwrotny:
+ * - najpierw "odejmujemy" azymut: yaw = -centerAz
+ * - potem "odejmujemy" wysokość: pitch = +centerAlt (zależnie od przyjętej osi)
+ *
+ * Jeśli obraz będzie "odwrócony w pionie" lub "w lewo/prawo", najczęściej wystarczy zmienić znak
+ * w jednym z tych obrotów (patrz komentarze przy yaw/pitch poniżej).
+ */
+private fun worldToCamera(vWorld: Vec3, centerAzDeg: Double, centerAltDeg: Double): Vec3 {
+    // yaw: obrót świata tak, by kierunek centerAz trafił na "przód" kamery (Z+)
+    val v1 = rotateY(vWorld, -centerAzDeg)
+
+    // pitch: obrót świata tak, by centerAlt trafił na "przód" kamery
+    // Jeśli będziesz miał wrażenie, że "góra/dół" działa odwrotnie, zmień znak na -centerAltDeg.
+    val v2 = rotateX(v1, centerAltDeg)
+
+    return v2
+}
+
+/**
+ * Projekcja perspektywiczna:
+ * camera.z musi być > 0 (przed kamerą).
+ *
+ * f = 1/tan(fov/2). Im większy f, tym większe powiększenie (węższy kąt).
+ */
+private fun projectPerspective(
+    vCam: Vec3,
+    centerX: Float,
+    centerY: Float,
+    halfW: Float,
+    halfH: Float,
+    f: Double,
+    scale: Float,
+    offset: Offset
+): Offset? {
+    if (vCam.z <= 0.0001) return null // za kamerą / w płaszczyźnie
+
+    val nx = (vCam.x / vCam.z) * f
+    val ny = (vCam.y / vCam.z) * f
+
+    val x = centerX + (nx * halfW).toFloat() * scale + offset.x
+    val y = centerY - (ny * halfH).toFloat() * scale + offset.y
+
+    // Opcjonalny prosty clipping do ekranu (z marginesem), żeby nie trzymać pozycji dla rzeczy daleko poza ekranem
+    if (x < -2000f || x > (2 * centerX + 2000f) || y < -2000f || y > (2 * centerY + 2000f)) {
+        // nadal można zwrócić null, ale lepiej zostawić, jeśli chcesz linie "wchodzące" z boku
+        // return null
+    }
+
+    return Offset(x, y)
+}
+
 // ---- RYSOWANIE MAPY NIEBA ----
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -55,7 +166,6 @@ fun StarMap(
     viewModel: SkyMapViewModel,
     constellations: List<Constellation>
 ) {
-
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -63,12 +173,9 @@ fun StarMap(
     }
 
     DisposableEffect(Unit) {
-        onDispose {
-            viewModel.stopSensors()
-        }
+        onDispose { viewModel.stopSensors() }
     }
 
-    // --- Diagnostyka ---
     LaunchedEffect(stars.size, constellations.size) {
         Log.d("STAR_MAP_DEBUG", "Liczba gwiazd: ${stars.size}")
         Log.d("STAR_MAP_DEBUG", "Liczba konstelacji: ${constellations.size}")
@@ -77,58 +184,58 @@ fun StarMap(
     var scale by rememberSaveable { mutableStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
 
-
     Canvas(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF0B0F19))
             .pointerInput(Unit) {
-                detectTransformGestures { _, pan, zoom, _ ->
+                detectTransformGestures { _, pan, _, _ ->
                     offset += pan
-                    scale = (scale * zoom).coerceIn(0.5f, 5f)
+                    // zoom ignorowany
                 }
             }
     ) {
-
         val centerAz = viewModel.viewDirection.azimuth
         val centerAlt = viewModel.viewDirection.altitude
-        val halfFov = viewModel.fieldOfView / 2
 
-        // 📌 Telefon skierowany pod horyzont → nic nie rysujemy
-        //if (centerAlt <= 0.0) return@Canvas
+        // FOV w poziomie (przyjmujemy jako bazę). Pion też będzie wyglądał OK przez halfH.
+        val fovDeg = viewModel.fieldOfView.coerceIn(10.0, 160.0)
+        val f = 1.0 / tan(Math.toRadians(fovDeg) / 2.0)
 
-        val centerX = size.width / 2 + offset.x
-        val centerY = size.height / 2 + offset.y
-        val halfWidth = size.width / 2
-        val halfHeight = size.height / 2
+        val centerX = size.width / 2f
+        val centerY = size.height / 2f
+        val halfW = size.width / 2f
+        val halfH = size.height / 2f
 
+        // pozycje tylko dla widocznych (przed kamerą + po projekcji)
         val positions = mutableMapOf<Int, Offset>()
 
-        // ---- RYSOWANIE GWIAZD ----
-
+        // ---- RYSOWANIE GWIAZD (3D -> perspektywa) ----
         stars.forEach { star ->
             val alt = star.alt ?: return@forEach
             val az = star.az ?: return@forEach
 
-            //if (alt < 0) return@forEach
+            // 1) gwiazda jako wektor 3D w świecie
+            val vWorld = altAzToUnitVector(az, alt)
 
-            val dist = angularDistance(
-                az, alt,
-                centerAz, centerAlt
-            )
+            // 2) obrót świata do układu kamery (telefonu)
+            val vCam = worldToCamera(vWorld, centerAz, centerAlt)
 
-            if (dist > halfFov) return@forEach
+            // 3) projekcja perspektywiczna na ekran
+            val pos = projectPerspective(
+                vCam = vCam,
+                centerX = centerX,
+                centerY = centerY,
+                halfW = halfW,
+                halfH = halfH,
+                f = f,
+                scale = scale,
+                offset = offset
+            ) ?: return@forEach
 
-            val dAz = ((az - centerAz + 540) % 360) - 180
-            val dAlt = alt - centerAlt
-
-            val x = centerX + (dAz / halfFov) * halfWidth * scale
-            val y = centerY - (dAlt / halfFov) * halfHeight * scale
-
-            val pos = Offset(x.toFloat(), y.toFloat())
             positions[star.id] = pos
 
-            // ---- KOLOR GWIAZDY ----
+            // ---- KOLOR / ROZMIAR (jak u Ciebie) ----
             val baseColor = when {
                 star.sptype.startsWith("O") -> Color(0xFF9BB0FF)
                 star.sptype.startsWith("B") -> Color(0xFFAABFFF)
@@ -167,8 +274,7 @@ fun StarMap(
             )
         }
 
-        // ---- RYSOWANIE KONSTELACJI ----
-
+        // ---- RYSOWANIE KONSTELACJI (bez zmian logiki) ----
         val constellationColor = Color.White.copy(alpha = 0.35f)
 
         constellations.forEach { constellation ->
