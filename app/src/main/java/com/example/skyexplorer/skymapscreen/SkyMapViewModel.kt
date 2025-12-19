@@ -150,7 +150,7 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
     suspend fun loadConstellations(): List<Constellation> = withContext(Dispatchers.IO) {
         try {
             val context = getApplication<Application>().applicationContext
-            val json = context.assets.open("constellations_lines.json")
+            val json = context.assets.open("constellations_test.json")
                 .bufferedReader()
                 .use { it.readText() }
 
