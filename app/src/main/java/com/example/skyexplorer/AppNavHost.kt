@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.skyexplorer.camera.CameraScreen
 import com.example.skyexplorer.camera.CameraViewModel
+import com.example.skyexplorer.camera.CameraViewModelFactory
 import com.example.skyexplorer.camera.LocalRepository
 import com.example.skyexplorer.constellations.ConstellationsScreen
 import com.example.skyexplorer.constellations.ConstellationsViewModel

@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,7 @@ import com.example.skyexplorer.PhotoEntity
 import com.example.skyexplorer.photoShare.ShareButton
 import com.example.skyexplorer.ui.theme.DarkGray
 import com.example.skyexplorer.ui.theme.StarBlue
+import kotlinx.coroutines.launch
 
 @Composable
 fun PhotoPager(
@@ -44,6 +46,7 @@ fun PhotoPager(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedPhoto by remember { mutableStateOf<PhotoEntity?>(null) }
+    val scope = rememberCoroutineScope()
 
     // Dialog potwierdzający usunięcie
     if (showDialog && selectedPhoto != null) {
@@ -56,8 +59,21 @@ fun PhotoPager(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
+                            val pageToRemove = pagerState.currentPage
                             onDeletePhoto(selectedPhoto!!)
                             showDialog = false
+
+                            scope.launch {
+                                val newPage = when {
+                                    photos.size <= 1 -> 0
+                                    pageToRemove >= photos.lastIndex -> photos.lastIndex - 1
+                                    else -> pageToRemove
+                                }
+
+                                if (newPage >= 0) {
+                                    pagerState.scrollToPage(newPage)
+                                }
+                            }
                         }
                 )
             },

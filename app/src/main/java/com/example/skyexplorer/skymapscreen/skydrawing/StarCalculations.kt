@@ -146,7 +146,7 @@ private fun projectPerspective(
     val ny = (vCam.y / vCam.z) * f
 
     val x = centerX + (nx * halfW).toFloat() * scale + offset.x
-    val y = centerY - (ny * halfH).toFloat() * scale + offset.y
+    val y = centerY + (ny * halfH).toFloat() * scale + offset.y
 
     // Opcjonalny prosty clipping do ekranu (z marginesem), żeby nie trzymać pozycji dla rzeczy daleko poza ekranem
     if (x < -2000f || x > (2 * centerX + 2000f) || y < -2000f || y > (2 * centerY + 2000f)) {
@@ -188,12 +188,7 @@ fun StarMap(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF0B0F19))
-            .pointerInput(Unit) {
-                detectTransformGestures { _, pan, _, _ ->
-                    offset += pan
-                    // zoom ignorowany
-                }
-            }
+
     ) {
         val centerAz = viewModel.viewDirection.azimuth
         val centerAlt = viewModel.viewDirection.altitude

@@ -61,104 +61,6 @@ fun ForwardButton(onClick: () -> Unit){
     }
 }
 
-
-@Composable
-fun NavigationBar(
-    onNavigateToCamera: () -> Unit,
-    onNavigateToConstellations: () -> Unit
-){
-    NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
-        NavigationBarItem(
-            selected = false,
-            onClick = {
-                onNavigateToCamera()
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.CameraAlt,
-                    contentDescription = null,
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = {
-                //
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.Home,
-                    contentDescription = null,
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = {
-                onNavigateToConstellations()
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.Info,
-                    contentDescription = null,
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-        )
-
-    }
-}
-
-@Composable
-fun BackwardButton(onClick: () -> Unit){
-    OutlinedIconButton(
-        onClick = {onClick()},
-        modifier = Modifier.padding(20.dp).size(60.dp)
-
-    )
-    {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Go to previous screen",
-            modifier = Modifier.size(40.dp)
-        )
-    }
-}
-
-@Composable
-fun CameraButton(onClick: () -> Unit){
-    OutlinedIconButton(
-        onClick = {onClick()},
-        modifier = Modifier.padding(20.dp).size(60.dp)
-
-    )
-    {
-        Icon(
-            imageVector = Icons.Filled.CameraAlt,
-            contentDescription = "Go to camera",
-            modifier = Modifier.size(40.dp)
-        )
-    }
-}
-
-@Composable
-fun InfoButton(onClick: () -> Unit){
-    OutlinedIconButton(
-        onClick = {onClick()},
-        modifier = Modifier.padding(20.dp).size(60.dp)
-
-    )
-    {
-        Icon(
-            imageVector = Icons.Filled.Info,
-            contentDescription = "Go to informations",
-            modifier = Modifier.size(40.dp)
-        )
-    }
-}
-
 @Composable
 fun BouncyButton(
     onClick: () -> Unit,
@@ -201,14 +103,7 @@ fun BouncyButton(
 
     ) {
         content()
-        /*
-                Icon(
-            imageVector = Icons.Filled.Info,
-            contentDescription = "Go to informations",
-            modifier = Modifier.size(70.dp),
-            tint = Color.DarkGray
-        )
-         */
+
 
     }
 }

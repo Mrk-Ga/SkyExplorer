@@ -20,6 +20,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import java.io.File
 import kotlin.collections.filter
+import com.example.skyexplorer.data.*
+
 
 
 class PhotoGalleryViewModel(
@@ -57,7 +59,7 @@ class PhotoGalleryViewModel(
     fun loadConstellationsInfo(constellationName: String): ConstellationInfo{
         val context = getApplication<Application>().applicationContext
 
-        val json = context.assets.open("constellations_info.json")
+        val json = context.assets.open(constellationInfoFilename)
             .bufferedReader()
             .use { it.readText() }
 

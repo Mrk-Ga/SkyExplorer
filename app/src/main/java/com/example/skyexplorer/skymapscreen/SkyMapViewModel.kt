@@ -16,9 +16,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.example.skyexplorer.skymapscreen.Constellation
-import com.example.skyexplorer.skymapscreen.SkyMapIntent
 import com.example.skyexplorer.skymapscreen.SkyMapModel
-import com.example.skyexplorer.skymapscreen.SkyMapUiState
 import com.example.skyexplorer.skymapscreen.Star
 import com.example.skyexplorer.skymapscreen.raDecToAltAz
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +30,7 @@ import java.time.ZonedDateTime
 import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
+import com.example.skyexplorer.data.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 data class SkyUiState (
@@ -44,12 +43,19 @@ data class SkyUiState (
     val error: String? = null
 )
 
+data class SkyMapUiState(
+    val loading: Boolean,
+    val error: Boolean
+)
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 class SkyMapViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(SkyMapUiState(false, false))
     val uiState: StateFlow<SkyMapUiState> = _uiState
+
+    //annotation class SkyMapUiState(val bool: Boolean, val bool1: Boolean)
 
     private val model = SkyMapModel()
 
@@ -60,17 +66,6 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
 
     private var allStarsCache: List<Star>? = null
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun handleIntent(intent: SkyMapIntent) {
-        when (intent) {
-            is SkyMapIntent.RequestNavigationPermission -> {
-                _uiState.value = _uiState.value.copy(hasPermission = true,)
-            }
-            // Pamiętaj, aby obsłużyć te intencje lub usunąć puste bloki, jeśli nic nie robią
-            is SkyMapIntent.NavigateToCamera -> { /* Logika nawigacji */ }
-            is SkyMapIntent.NavigateToConstellations -> { /* Logika nawigacji */ }
-        }
-    }
 
 
 
@@ -93,7 +88,7 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
         if (allStarsCache == null) {
             try {
                 val context = getApplication<Application>().applicationContext
-                val starsJsonString = context.assets.open("stars.json")
+                val starsJsonString = context.assets.open(starsFilename)
                     .bufferedReader()
                     .use { it.readText() }
                     .replace("NaN", "null")
@@ -161,7 +156,7 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
     suspend fun loadConstellations(): List<Constellation> = withContext(Dispatchers.IO) {
         try {
             val context = getApplication<Application>().applicationContext
-            val json = context.assets.open("constellations_lines.json")
+            val json = context.assets.open(constellationLinesFilename)
                 .bufferedReader()
                 .use { it.readText() }
 

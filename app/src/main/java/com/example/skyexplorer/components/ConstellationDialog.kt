@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.skyexplorer.camera.CameraViewModel
+import com.example.skyexplorer.data.closeInformationButton
 
 @kotlinx.serialization.Serializable
 data class ConstellationInfo(
@@ -83,7 +84,7 @@ fun DialogWithImage(
                 onClick = onDismissRequest,
                 modifier = Modifier.align(Alignment.End)
             ) {
-                Text("Zamknij")
+                Text(closeInformationButton)
             }
         }
     }
