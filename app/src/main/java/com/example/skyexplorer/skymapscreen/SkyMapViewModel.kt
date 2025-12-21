@@ -203,31 +203,55 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
         sensorManager.unregisterListener(sensorListener)
     }
 
+    private val remappedRotationMatrix = FloatArray(9)
+
     private val sensorListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent) {
+            if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
+                SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
 
-            SensorManager.getRotationMatrixFromVector(
-                rotationMatrix,
-                event.values
-            )
+                // --- KLUCZOWA ZMIANA: Przemapowanie układu współrzędnych ---
+                // Zmieniamy układ z "telefon na stole" na "telefon jako okno (AR)"
+                // AXIS_X i AXIS_Z mapują układ tak, że telefon trzymany pionowo działa poprawnie.
+                val success = SensorManager.remapCoordinateSystem(
+                    rotationMatrix,
+                    SensorManager.AXIS_X,
+                    SensorManager.AXIS_Z,
+                    remappedRotationMatrix
+                )
 
-            SensorManager.getOrientation(rotationMatrix, orientationAngles)
+                if (success) {
+                    SensorManager.getOrientation(remappedRotationMatrix, orientationAngles)
 
-            val azimuthRad = orientationAngles[0]
-            val pitchRad = orientationAngles[1]
+                    // orientationAngles[0] -> Azymut (rad)
+                    // orientationAngles[1] -> Pitch (rad) - tutaj to będzie nasza wysokość (Altitude)
+                    // orientationAngles[2] -> Roll (rad)
 
-            val azimuthDeg =
-                (Math.toDegrees(azimuthRad.toDouble()) + 360) % 360
+                    val azimuthRad = orientationAngles[0]
+                    val pitchRad = orientationAngles[1]
 
-            val pitchDeg =
-                Math.toDegrees(pitchRad.toDouble())
+                    // Konwersja na stopnie
+                    var azimuthDeg = Math.toDegrees(azimuthRad.toDouble())
+                    // Normalizacja azymutu do 0-360
+                    if (azimuthDeg < 0) azimuthDeg += 360.0
 
-            val newAlt = (-pitchDeg).coerceIn(0.0, 90.0)
+                    val pitchDeg = Math.toDegrees(pitchRad.toDouble())
 
-            viewDirection = ViewDirection(
-                azimuth = smoothAngle(viewDirection.azimuth, azimuthDeg),
-                altitude = smooth(viewDirection.altitude, newAlt)
-            )
+                    // W tym układzie (po remap):
+                    // pitchDeg = 0 -> horyzont
+                    // pitchDeg = 90 -> patrzenie w dół (lub górę zależnie od implementacji remap)
+                    // Zazwyczaj przy AXIS_X, AXIS_Z patrzenie w górę daje wartości ujemne lub dodatnie zależnie od definicji.
+                    // Dla konfiguracji X/Z: Horyzont ~0, Zenith (w górę) ~90.
+
+                    // Aktualizacja widoku
+                    viewDirection = ViewDirection(
+                        azimuth = smoothAngle(viewDirection.azimuth, azimuthDeg),
+                        // Altitude w tym mapowaniu to zazwyczaj pitch.
+                        // Czasami trzeba dodać offset, ale przy remap X/Z powinno być wprost.
+                        altitude = smooth(viewDirection.altitude, pitchDeg)
+                    )
+                }
+            }
         }
 
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}

@@ -114,22 +114,17 @@ private fun rotateX(v: Vec3, degrees: Double): Vec3 {
  * w jednym z tych obrotów (patrz komentarze przy yaw/pitch poniżej).
  */
 private fun worldToCamera(vWorld: Vec3, centerAzDeg: Double, centerAltDeg: Double): Vec3 {
-    // yaw: obrót świata tak, by kierunek centerAz trafił na "przód" kamery (Z+)
+    // 1. Azymut (lewo/prawo) - zazwyczaj minus jest poprawny dla kamery
     val v1 = rotateY(vWorld, -centerAzDeg)
 
-    // pitch: obrót świata tak, by centerAlt trafił na "przód" kamery
-    // Jeśli będziesz miał wrażenie, że "góra/dół" działa odwrotnie, zmień znak na -centerAltDeg.
-    val v2 = rotateX(v1, centerAltDeg)
+    // 2. Wysokość (góra/dół)
+    // ZMIANA: Dodajemy minus przed centerAltDeg.
+    // Jeśli ruszasz telefonem w górę, a gwiazdy uciekają też w górę (zamiast chować się pod dolną krawędź),
+    // to zmiana znaku tutaj to naprawi.
+    val v2 = rotateX(v1, -centerAltDeg)
 
     return v2
 }
-
-/**
- * Projekcja perspektywiczna:
- * camera.z musi być > 0 (przed kamerą).
- *
- * f = 1/tan(fov/2). Im większy f, tym większe powiększenie (węższy kąt).
- */
 private fun projectPerspective(
     vCam: Vec3,
     centerX: Float,
@@ -140,19 +135,17 @@ private fun projectPerspective(
     scale: Float,
     offset: Offset
 ): Offset? {
-    if (vCam.z <= 0.0001) return null // za kamerą / w płaszczyźnie
+    // Jeśli punkt jest za kamerą (z < 0), nie rysujemy go
+    if (vCam.z <= 0.1) return null
 
     val nx = (vCam.x / vCam.z) * f
     val ny = (vCam.y / vCam.z) * f
 
     val x = centerX + (nx * halfW).toFloat() * scale + offset.x
-    val y = centerY + (ny * halfH).toFloat() * scale + offset.y
 
-    // Opcjonalny prosty clipping do ekranu (z marginesem), żeby nie trzymać pozycji dla rzeczy daleko poza ekranem
-    if (x < -2000f || x > (2 * centerX + 2000f) || y < -2000f || y > (2 * centerY + 2000f)) {
-        // nadal można zwrócić null, ale lepiej zostawić, jeśli chcesz linie "wchodzące" z boku
-        // return null
-    }
+    // ZMIANA: centerY - ... zamiast centerY + ...
+    // Dzięki temu dodatnie 'ny' (gwiazda w górze) da mniejszą wartość Y na ekranie (bliżej górnej krawędzi).
+    val y = centerY - (ny * halfH).toFloat() * scale + offset.y
 
     return Offset(x, y)
 }
