@@ -7,6 +7,12 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -25,15 +31,44 @@ import com.example.skyexplorer.constellations.ConstellationsScreen
 import com.example.skyexplorer.constellations.ConstellationsViewModel
 import com.example.skyexplorer.photoGallery.PhotoGalleryScreen
 import com.example.skyexplorer.photoGallery.PhotoGalleryViewModel
-import com.example.skyexplorer.skymapscreen.*
+import com.example.skyexplorer.data.*
+import com.example.skyexplorer.skymapscreen.SkyMapScreen
+import com.google.accompanist.navigation.animation.AnimatedNavHost
 
+@OptIn(ExperimentalAnimationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("ViewModelConstructorInComposable")
 @androidx.annotation.RequiresPermission(allOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION])
 @Composable
 fun AppNavHost(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "skymap") {
-
+    NavHost(
+        navController = navController,
+        startDestination = "skymap",
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { it },
+                animationSpec = tween(animationDuration)
+            ) + fadeIn()
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tween(animationDuration)
+            ) + fadeOut()
+        },
+        popEnterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { -it },
+                animationSpec = tween(animationDuration)
+            ) + fadeIn()
+        },
+        popExitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tween(animationDuration)
+            ) + fadeOut()
+        }
+    ){
 
 
         composable("skymap")  {

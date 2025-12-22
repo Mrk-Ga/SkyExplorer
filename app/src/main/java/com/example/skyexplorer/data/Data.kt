@@ -9,3 +9,5 @@ val cameraPermissionInfo :String = "Wymagane pozwolenie na użycie kamery"
 val photoFilesFormat : String = "jpg"
 
 val closeInformationButton :String = "Zamknij"
+
+val animationDuration: Int = 500
