@@ -32,7 +32,9 @@ import com.example.skyexplorer.constellations.ConstellationsViewModel
 import com.example.skyexplorer.photoGallery.PhotoGalleryScreen
 import com.example.skyexplorer.photoGallery.PhotoGalleryViewModel
 import com.example.skyexplorer.data.*
+import com.example.skyexplorer.SkyMapRepository
 import com.example.skyexplorer.skymapscreen.SkyMapScreen
+import com.example.skyexplorer.skymapscreen.SkyMapViewModelFactory
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -40,7 +42,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 @SuppressLint("ViewModelConstructorInComposable")
 @androidx.annotation.RequiresPermission(allOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION])
 @Composable
-fun AppNavHost(navController: NavHostController) {
+fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
     NavHost(
         navController = navController,
         startDestination = "skymap",
@@ -72,7 +74,8 @@ fun AppNavHost(navController: NavHostController) {
 
 
         composable("skymap")  {
-            val skyMapViewModel: SkyMapViewModel = viewModel()
+            val skyMapViewModel: SkyMapViewModel = viewModel(
+                                                    factory = SkyMapViewModelFactory(repository))
             SkyMapScreen(
                 viewModel = skyMapViewModel,
                 onNavigateToCamera = { navController.navigate("camera") },

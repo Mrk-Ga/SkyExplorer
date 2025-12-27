@@ -13,8 +13,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import com.example.skyexplorer.SkyMapRepository
 import com.example.skyexplorer.skymapscreen.Constellation
 import com.example.skyexplorer.skymapscreen.SkyMapModel
 import com.example.skyexplorer.skymapscreen.Star
@@ -48,133 +50,92 @@ data class SkyMapUiState(
     val error: Boolean
 )
 
-
 @RequiresApi(Build.VERSION_CODES.O)
-class SkyMapViewModel(application: Application) : AndroidViewModel(application) {
+class SkyMapViewModel(
+    private val repository: SkyMapRepository
+) : ViewModel() {
+
+    // ---------- UI STATE ----------
 
     private val _uiState = MutableStateFlow(SkyMapUiState(false, false))
     val uiState: StateFlow<SkyMapUiState> = _uiState
 
-    //annotation class SkyMapUiState(val bool: Boolean, val bool1: Boolean)
-
-    private val model = SkyMapModel()
-
     private val _stars = MutableStateFlow<List<Star>>(emptyList())
-    private val _constellations = MutableStateFlow<List<Constellation>>(emptyList())
     val stars: StateFlow<List<Star>> = _stars
+
+    private val _constellations = MutableStateFlow<List<Constellation>>(emptyList())
     val constellations: StateFlow<List<Constellation>> = _constellations
 
-    private var allStarsCache: List<Star>? = null
+    // ---------- STARS LOGIC ----------
 
-
-
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getTime(): ZonedDateTime {
-        return ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
-    suspend fun createVisibleStars(): List<Star> = withContext(Dispatchers.Default) {
-        // 1. Pobierz lokalizację
-        val loc = model.getLocalizationSuspend(application = application)
-        if (loc == null) {
-            Log.e("SkyMapViewModel", "Brak lokalizacji")
-            return@withContext emptyList()
-        }
-
-        // 2. Wczytaj JSON tylko raz (Cache)
-        if (allStarsCache == null) {
-            try {
-                val context = getApplication<Application>().applicationContext
-                val starsJsonString = context.assets.open(starsFilename)
-                    .bufferedReader()
-                    .use { it.readText() }
-                    .replace("NaN", "null")
-
-                // JSON decode może być kosztowny, robimy to raz
-                allStarsCache = Json.decodeFromString<List<Star>>(starsJsonString)
-            } catch (e: Exception) {
-                Log.e("SkyMapViewModel", "Błąd wczytywania JSON: ${e.message}")
-                return@withContext emptyList()
-            }
-        }
-
-        // Używamy bezpiecznie odpakowanej listy
-        val sourceStars = allStarsCache ?: emptyList()
-        val calculatedStars = mutableListOf<Star>()
-
-        // 3. Pobierz czas RAZ przed pętlą
-        val timeUtc = getTime()
-
-        // 4. Obliczenia
-        sourceStars.forEach { star ->
-            val currentStar = star.copy()
-
-            // --- KLUCZOWA POPRAWKA: USUNIĘTO * 15.0 ---
-            // Twoje RA w JSON jest w stopniach. Funkcja matematyczna też oczekuje stopni.
-            val cords = raDecToAltAz(
-                raDeg = currentStar.ra,
-                decDeg = currentStar.dec,
-                latDeg = loc.first,
-                lonDeg = loc.second,
-                dateTime = timeUtc
-            )
-
-            currentStar.alt = cords.alt
-            currentStar.az = cords.az
-
-            if (currentStar.magnitude < 6.0) {
-                calculatedStars.add(currentStar)
-            }
-        }
-
-        return@withContext calculatedStars.sortedByDescending { it.magnitude }
-    }
-
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
+    @RequiresPermission(
+        allOf = [
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ]
+    )
     fun loadStars() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(loading = true)
 
             try {
-                val result = createVisibleStars()
-                _stars.value = result
-            } catch (e: SecurityException) {
-                Log.e("SkyMapViewModel", "Brak uprawnień lokalizacji")
+                val loc = repository.getLocalization()
+                if (loc == null) {
+                    _stars.value = emptyList()
+                    return@launch
+                }
+
+                val (lat, lon) = loc
+                val timeUtc = ZonedDateTime.now(ZoneOffset.UTC)
+
+                val visibleStars = repository.loadStars()
+                    .map { star ->
+                        val cords = raDecToAltAz(
+                            raDeg = star.ra,
+                            decDeg = star.dec,
+                            latDeg = lat,
+                            lonDeg = lon,
+                            dateTime = timeUtc
+                        )
+
+                        star.copy(
+                            alt = cords.alt,
+                            az = cords.az
+                        )
+                    }
+                    .filter { it.magnitude < 6.0 }
+                    .sortedByDescending { it.magnitude }
+
+                _stars.value = visibleStars
+
             } catch (e: Exception) {
-                Log.e("SkyMapViewModel", "Błąd generowania gwiazd: ${e.message}")
+                //Log.e("SkyMapViewModel", "loadStars error", e)
             } finally {
                 _uiState.value = _uiState.value.copy(loading = false)
             }
         }
     }
 
-    suspend fun loadConstellations(): List<Constellation> = withContext(Dispatchers.IO) {
-        try {
-            val context = getApplication<Application>().applicationContext
-            val json = context.assets.open(constellationLinesFilename)
-                .bufferedReader()
-                .use { it.readText() }
+    // ---------- CONSTELLATIONS ----------
 
-            val result = Json.decodeFromString<List<Constellation>>(json)
-            Log.d("CONST_DEBUG", "Załadowano pomyślnie: ${result.size} konstelacji")
-            _constellations.value = result
-            return@withContext result
+    fun loadConstellations() : List<Constellation>{
+        viewModelScope.launch {
+            try {
+                _constellations.value = repository.loadConstellations()
+            } catch (e: Exception) {
+                Log.e("SkyMapViewModel", "loadConstellations error", e)
 
-        } catch (e: Exception) {
-            Log.e("CONST_DEBUG", "Błąd wczytywania konstelacji: ${e.message}")
-            e.printStackTrace()
-            return@withContext emptyList()
+            }
+            return@launch
         }
+        return emptyList()
     }
 
+    // ---------- SENSOR LOGIC (bez zmian) ----------
+
     data class ViewDirection(
-        val azimuth: Double = 0.0,   // 0–360
-        val altitude: Double = 45.0  // 0–90
+        val azimuth: Double = 0.0,
+        val altitude: Double = 45.0
     )
 
     var viewDirection by mutableStateOf(ViewDirection())
@@ -185,6 +146,7 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
 
     private val rotationMatrix = FloatArray(9)
     private val orientationAngles = FloatArray(3)
+    private val remappedRotationMatrix = FloatArray(9)
 
     fun startSensors(context: Context) {
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -203,87 +165,45 @@ class SkyMapViewModel(application: Application) : AndroidViewModel(application) 
         sensorManager.unregisterListener(sensorListener)
     }
 
-    private val remappedRotationMatrix = FloatArray(9)
-
     private val sensorListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent) {
-            if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
-                SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+            if (event.sensor.type != Sensor.TYPE_ROTATION_VECTOR) return
 
-                // --- KLUCZOWA ZMIANA: Przemapowanie układu współrzędnych ---
-                // Zmieniamy układ z "telefon na stole" na "telefon jako okno (AR)"
-                // AXIS_X i AXIS_Z mapują układ tak, że telefon trzymany pionowo działa poprawnie.
-                val success = SensorManager.remapCoordinateSystem(
-                    rotationMatrix,
-                    SensorManager.AXIS_X,
-                    SensorManager.AXIS_Z,
-                    remappedRotationMatrix
-                )
+            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
 
-                if (success) {
-                    SensorManager.getOrientation(remappedRotationMatrix, orientationAngles)
+            val success = SensorManager.remapCoordinateSystem(
+                rotationMatrix,
+                SensorManager.AXIS_X,
+                SensorManager.AXIS_Z,
+                remappedRotationMatrix
+            )
 
-                    // orientationAngles[0] -> Azymut (rad)
-                    // orientationAngles[1] -> Pitch (rad) - tutaj to będzie nasza wysokość (Altitude)
-                    // orientationAngles[2] -> Roll (rad)
+            if (!success) return
 
-                    val azimuthRad = orientationAngles[0]
-                    val pitchRad = orientationAngles[1]
+            SensorManager.getOrientation(remappedRotationMatrix, orientationAngles)
 
-                    // Konwersja na stopnie
-                    var azimuthDeg = Math.toDegrees(azimuthRad.toDouble())
-                    // Normalizacja azymutu do 0-360
-                    if (azimuthDeg < 0) azimuthDeg += 360.0
+            val azimuthDeg =
+                (Math.toDegrees(orientationAngles[0].toDouble()) + 360) % 360
+            val pitchDeg = Math.toDegrees(orientationAngles[1].toDouble())
 
-                    val pitchDeg = Math.toDegrees(pitchRad.toDouble())
-
-                    // W tym układzie (po remap):
-                    // pitchDeg = 0 -> horyzont
-                    // pitchDeg = 90 -> patrzenie w dół (lub górę zależnie od implementacji remap)
-                    // Zazwyczaj przy AXIS_X, AXIS_Z patrzenie w górę daje wartości ujemne lub dodatnie zależnie od definicji.
-                    // Dla konfiguracji X/Z: Horyzont ~0, Zenith (w górę) ~90.
-
-                    // Aktualizacja widoku
-                    viewDirection = ViewDirection(
-                        azimuth = smoothAngle(viewDirection.azimuth, azimuthDeg),
-                        // Altitude w tym mapowaniu to zazwyczaj pitch.
-                        // Czasami trzeba dodać offset, ale przy remap X/Z powinno być wprost.
-                        altitude = smooth(viewDirection.altitude, pitchDeg)
-                    )
-                }
-            }
+            viewDirection = ViewDirection(
+                azimuth = smoothAngle(viewDirection.azimuth, azimuthDeg),
+                altitude = smooth(viewDirection.altitude, pitchDeg)
+            )
         }
 
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
     }
 
-    private fun smooth(old: Double, new: Double, alpha: Double = 0.1): Double {
-        return old + alpha * (new - old)
-    }
+    // ---------- MATH (TESTOWALNE) ----------
 
-    private fun smoothAngle(old: Double, new: Double, alpha: Double = 0.1): Double {
-        var diff = (new - old + 540) % 360 - 180
+    internal fun smooth(old: Double, new: Double, alpha: Double = 0.1): Double =
+        old + alpha * (new - old)
+
+    internal fun smoothAngle(old: Double, new: Double, alpha: Double = 0.1): Double {
+        val diff = (new - old + 540) % 360 - 180
         return (old + alpha * diff + 360) % 360
     }
 
     val fieldOfView = 70.0
-
-
-}
-
-fun angularDistance(
-    az1: Double, alt1: Double,
-    az2: Double, alt2: Double
-): Double {
-    val a1 = Math.toRadians(az1)
-    val a2 = Math.toRadians(az2)
-    val z1 = Math.toRadians(alt1)
-    val z2 = Math.toRadians(alt2)
-
-    return Math.toDegrees(
-        acos(
-            sin(z1) * sin(z2) +
-                    cos(z1) * cos(z2) * cos(a1 - a2)
-        )
-    )
 }
