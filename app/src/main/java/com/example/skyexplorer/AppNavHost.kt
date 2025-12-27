@@ -32,7 +32,7 @@ import com.example.skyexplorer.constellations.ConstellationsViewModel
 import com.example.skyexplorer.photoGallery.PhotoGalleryScreen
 import com.example.skyexplorer.photoGallery.PhotoGalleryViewModel
 import com.example.skyexplorer.data.*
-import com.example.skyexplorer.SkyMapRepository
+import com.example.skyexplorer.skymapscreen.SkyMapRepository
 import com.example.skyexplorer.skymapscreen.SkyMapScreen
 import com.example.skyexplorer.skymapscreen.SkyMapViewModelFactory
 import com.google.accompanist.navigation.animation.AnimatedNavHost

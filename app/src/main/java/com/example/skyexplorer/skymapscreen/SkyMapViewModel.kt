@@ -16,7 +16,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
-import com.example.skyexplorer.SkyMapRepository
+import com.example.skyexplorer.skymapscreen.SkyMapRepository
 import com.example.skyexplorer.skymapscreen.Constellation
 import com.example.skyexplorer.skymapscreen.SkyMapModel
 import com.example.skyexplorer.skymapscreen.Star

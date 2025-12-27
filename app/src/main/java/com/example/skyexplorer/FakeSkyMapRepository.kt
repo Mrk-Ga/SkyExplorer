@@ -1,6 +1,7 @@
 package com.example.skyexplorer
 
 import com.example.skyexplorer.skymapscreen.Constellation
+import com.example.skyexplorer.skymapscreen.SkyMapRepository
 import com.example.skyexplorer.skymapscreen.Star
 
 class FakeSkyMapRepository(

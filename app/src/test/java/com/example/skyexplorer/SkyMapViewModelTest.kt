@@ -2,7 +2,7 @@ package com.example.skyexplorer
 
 import SkyMapViewModel
 import android.app.Application
-import com.example.skyexplorer.SkyMapRepository
+import com.example.skyexplorer.skymapscreen.SkyMapRepository
 import com.example.skyexplorer.skymapscreen.Constellation
 import com.example.skyexplorer.skymapscreen.Star
 import kotlinx.coroutines.Dispatchers
