@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-
+import com.example.skyexplorer.data.*
 @Composable
 fun ConstellationItem(
     mainContent: String,
@@ -45,7 +45,7 @@ fun ConstellationItem(
             //val regex = Regex("file:///android_asset/constellationsPhotos/${imageName}\\d+\\.(png|jpg|jpeg)$", RegexOption.IGNORE_CASE)
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("file:///android_asset/constellationsPhotos/${imageName.replace(" ", "_")}.jpg")
+                    .data("file:///android_asset/constellationsPhotos/${imageName.replace(" ", "_")}.${photoFilesFormat}")
                     .build(),
                 contentDescription = null,
 

@@ -37,7 +37,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skyexplorer.components.AppNavigationBar
-
+import com.example.skyexplorer.components.BouncyButton
+import com.example.skyexplorer.data.*
 
 @SuppressLint("SetJavaScriptEnabled", "RememberReturnType")
 @RequiresApi(Build.VERSION_CODES.O)
@@ -56,7 +57,7 @@ fun SkyMapScreen(
 
     if (permissionFine != PackageManager.PERMISSION_GRANTED &&
         permissionCoarse != PackageManager.PERMISSION_GRANTED) {
-        Text("⚠️ Brak uprawnień lokalizacji")
+        Text(localizationPermissionText)
         return
     }
     val stars by viewModel.stars.collectAsState()
@@ -92,7 +93,7 @@ fun SkyMapScreen(
 
 
             if (stars.isEmpty()) {
-                Text("Wczytywanie nieba...", modifier = Modifier.padding(100.dp))
+                Text(mapRenderingInfo, modifier = Modifier.padding(100.dp))
             } else {
                 StarMap(stars, viewModel,constellations)
             }

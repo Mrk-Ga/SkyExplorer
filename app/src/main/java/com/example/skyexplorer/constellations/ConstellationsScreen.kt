@@ -36,7 +36,6 @@ fun ConstellationsScreen(
             //    .background(Color.DarkGray)
             ,
         ) {
-            //Text("KONSTELACJE", modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally))
 
             //ConstellationItem()
             ConstellationsList(viewModel, viewModel.loadConstellationsInfo(),

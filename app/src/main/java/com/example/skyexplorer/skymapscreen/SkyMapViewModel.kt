@@ -1,5 +1,4 @@
 import android.Manifest
-import android.app.Application
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -12,38 +11,17 @@ import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.example.skyexplorer.skymapscreen.SkyMapRepository
 import com.example.skyexplorer.skymapscreen.Constellation
-import com.example.skyexplorer.skymapscreen.SkyMapModel
 import com.example.skyexplorer.skymapscreen.Star
 import com.example.skyexplorer.skymapscreen.raDecToAltAz
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import kotlin.math.acos
-import kotlin.math.cos
-import kotlin.math.sin
-import com.example.skyexplorer.data.*
-
-@RequiresApi(Build.VERSION_CODES.O)
-data class SkyUiState (
-    val stars: List<Star> = emptyList(),
-    val constellations: List<Constellation> = emptyList(),
-    val lat: Double? = null,
-    val lon: Double? = null,
-    val timeUtc: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC),
-    val loading: Boolean = true,
-    val error: String? = null
-)
 
 data class SkyMapUiState(
     val loading: Boolean,

@@ -7,21 +7,15 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.skyexplorer.components.ConstellationInfo
-import com.example.skyexplorer.components.DialogWithImage
-import com.example.skyexplorer.skymapscreen.Constellation
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.security.AccessController.getContext
 import java.text.SimpleDateFormat
 import java.util.Locale
+import com.example.skyexplorer.data.*
 
 class CameraViewModel (
     private val repo: LocalRepository,
@@ -61,7 +55,7 @@ class CameraViewModel (
     fun loadConstellationsInfo(): List<ConstellationInfo> {
         val context = getApplication<Application>().applicationContext
 
-        val json = context.assets.open("constellations_info.json")
+        val json = context.assets.open(constellationInfoFilename)
             .bufferedReader()
             .use { it.readText() }
 
@@ -69,12 +63,12 @@ class CameraViewModel (
     }
 
     fun takePhoto(imageCapture: ImageCapture,context: Context, customName: String) {
-        val timestamp = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
+        val timestamp = SimpleDateFormat(dateFormat, Locale.US)
             .format(System.currentTimeMillis())
 
         val photoFile = File(
             context.externalMediaDirs.first(),
-            "${customName}_${timestamp}.jpg"
+            "${customName}_${timestamp}.${photoFilesFormat}"
         )
 
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
@@ -95,17 +89,20 @@ class CameraViewModel (
     }
 
     fun savePhoto(uri: Uri) {
+        /*
         val context = getApplication<Application>().applicationContext
 
         val customName = "Orion"   // np. nazwa gwiazdozbioru
 
-        val timestamp = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
+        val timestamp = SimpleDateFormat(dateFormat, Locale.US)
             .format(System.currentTimeMillis())
 
         val photoFile = File(
             context.externalMediaDirs.first(),
-            "${customName}_$timestamp.jpg"
+            "${customName}_$timestamp.${photoFilesFormat}"
         )
+
+         */
 
 
 

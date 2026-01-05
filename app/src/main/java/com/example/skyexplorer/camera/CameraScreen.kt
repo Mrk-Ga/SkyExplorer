@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.skyexplorer.components.BouncyButton
 import com.example.skyexplorer.components.ForwardButton
+import com.example.skyexplorer.data.cameraPermissionText
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -85,7 +86,7 @@ fun CameraScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text("Wymagane pozwolenie na użycie kamery")
+            Text(cameraPermissionText)
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)

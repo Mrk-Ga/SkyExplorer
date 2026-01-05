@@ -6,7 +6,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.skyexplorer.skymapscreen.SkyMapRepository
-import com.example.skyexplorer.data.SkyRepository // Assuming you have a repository
 
 class SkyMapViewModelFactory(private val repository: SkyMapRepository) : ViewModelProvider.Factory {
 

@@ -1,4 +1,4 @@
-package com.example.skyexplorer.photoShare
+package com.example.skyexplorer.photoGallery
 
 import android.util.Log
 import androidx.compose.foundation.layout.size
@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import com.example.skyexplorer.components.BouncyButton
 import java.io.File
 import androidx.core.net.toUri
-import com.example.skyexplorer.photoGallery.PhotoGalleryViewModel
 
 
 @Composable

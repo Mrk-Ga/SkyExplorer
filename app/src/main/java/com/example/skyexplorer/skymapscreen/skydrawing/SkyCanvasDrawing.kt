@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,29 +16,11 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import kotlin.math.*
 
-@kotlinx.serialization.Serializable
-data class Star(
-    val id: Int,
-    val name: String,
-    val ra: Double,
-    val dec: Double,
-    val magnitude: Double,
-    val sptype: String,
-    var alt: Double? = null,
-    var az: Double? = null
-)
 
-@kotlinx.serialization.Serializable
-data class Constellation(
-    val id: String,
-    val name: String,
-    val segments: List<List<Int>>
-)
 
 /**
  * Prosty wektor 3D (bez zależności od OpenGL).

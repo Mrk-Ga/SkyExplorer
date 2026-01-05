@@ -45,7 +45,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
     NavHost(
         navController = navController,
-        startDestination = "skymap",
+        startDestination = skyMapScreen,
         enterTransition = {
             slideInHorizontally(
                 initialOffsetX = { it },
@@ -73,19 +73,19 @@ fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
     ){
 
 
-        composable("skymap")  {
+        composable(skyMapScreen)  {
             val skyMapViewModel: SkyMapViewModel = viewModel(
                                                     factory = SkyMapViewModelFactory(repository))
             SkyMapScreen(
                 viewModel = skyMapViewModel,
-                onNavigateToCamera = { navController.navigate("camera") },
-                onNavigateToConstellations = { navController.navigate("assets/constellations") },
-                onNavigateToSkyMap = { navController.navigate("skymap") }
+                onNavigateToCamera = { navController.navigate(cameraScreen) },
+                onNavigateToConstellations = { navController.navigate(constellationsScreen) },
+                onNavigateToSkyMap = { navController.navigate(skyMapScreen) }
             )
         }
 
 
-        composable("camera") {
+        composable(cameraScreen) {
             val app = LocalContext.current.applicationContext as SkyExplorerApp
             val repo = app.cameraRepository
             val cameraViewModel: CameraViewModel = viewModel(
@@ -97,14 +97,14 @@ fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
             )
         }
 
-        composable("assets/constellations"){
+        composable(constellationsScreen){
             val constellationsViewModel: ConstellationsViewModel = viewModel()
             ConstellationsScreen(
                 viewModel = constellationsViewModel,
 
-                onNavigateToCamera = { navController.navigate("camera") },
-                onNavigateToConstellations = { navController.navigate("assets/constellations") },
-                onNavigateToSkyMap = { navController.navigate("skymap") },
+                onNavigateToCamera = { navController.navigate(cameraScreen) },
+                onNavigateToConstellations = { navController.navigate(constellationsScreen) },
+                onNavigateToSkyMap = { navController.navigate(skyMapScreen) },
                 onNavigateToPhotoGallery = { item ->
                     navController.navigate("gallery/${item}")
 
@@ -113,7 +113,7 @@ fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
         }
 
         composable(
-            route = "gallery/{item}",
+            route = photoGalleryScreen,
             arguments = listOf(
                 navArgument("item") { type = NavType.StringType }
             )
@@ -122,8 +122,8 @@ fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
             PhotoGalleryScreen(
                 viewModel = viewModel,
                 constellationName = it.arguments?.getString("item") ?: "",
-                onNavigateToConstellations = {navController.navigate("assets/constellations")
-                }
+                onNavigateToConstellations = {navController.navigate(constellationsScreen)},
+
             )
 
         }

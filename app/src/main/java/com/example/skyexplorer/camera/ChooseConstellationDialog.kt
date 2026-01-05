@@ -1,6 +1,5 @@
-package com.example.skyexplorer.components
+package com.example.skyexplorer.camera
 
-import android.content.res.Resources
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,10 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.skyexplorer.camera.CameraViewModel
 import com.example.skyexplorer.data.closeInformationButton
+import kotlinx.serialization.Serializable
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class ConstellationInfo(
     val polish: String,
     val latin: String,
@@ -32,7 +31,7 @@ data class ConstellationInfo(
 
 
 @Composable
-fun DialogWithImage(
+fun ConstellationChooseDialog(
     viewModel: CameraViewModel,
     onDismissRequest: () -> Unit,
     onConfirmation: (name: String) -> Unit,

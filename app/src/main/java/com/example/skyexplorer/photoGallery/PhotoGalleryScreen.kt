@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skyexplorer.components.BouncyButton
-import com.example.skyexplorer.photoShare.ShareButton
 //import com.example.skyexplorer.components.BouncyButton
 import com.example.skyexplorer.ui.theme.*
 
@@ -132,7 +131,7 @@ fun PhotoGalleryScreen(
                     onDeletePhoto = {
                         viewModel.deletePhoto(it)
                     },
-                    pagerState = pagerState
+                    //pagerState = pagerState
 
                 )
             }

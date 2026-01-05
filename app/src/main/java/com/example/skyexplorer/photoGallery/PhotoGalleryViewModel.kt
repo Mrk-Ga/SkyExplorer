@@ -5,16 +5,13 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.core.content.FileProvider
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.skyexplorer.PhotoEntity
 import com.example.skyexplorer.camera.LocalRepository
-import com.example.skyexplorer.components.ConstellationInfo
+import com.example.skyexplorer.camera.ConstellationInfo
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -90,7 +87,7 @@ class PhotoGalleryViewModel(
         }
 
         context.startActivity(
-            Intent.createChooser(intent, "Udostępnij zdjęcie")
+            Intent.createChooser(intent, sharePhotoTitle)
         )
     }
 }

@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.example.skyexplorer.components.BouncyButton
-import com.example.skyexplorer.components.DialogWithImage
 
 @Composable
 fun CameraPreview(
@@ -40,7 +39,7 @@ fun CameraPreview(
 
 
     if (showDialog) {
-        DialogWithImage(
+        ConstellationChooseDialog(
             onDismissRequest = { showDialog = false },
             onConfirmation = { name ->
                 selectedConstellationName = name
@@ -91,45 +90,7 @@ fun CameraPreview(
 
                 onClick = {
                     showDialog = true
-/*
-                    val photoFile = File(
-                        context.externalMediaDirs.first(),
-                        SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
-                            .format(System.currentTimeMillis()) + ".jpg"
-                    )
-
-                    val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
-                    imageCapture.takePicture(
-                        outputOptions,
-                        ContextCompat.getMainExecutor(context),
-                        object : ImageCapture.OnImageSavedCallback {
-                            override fun onError(exc: ImageCaptureException) {
-                                exc.printStackTrace()
-                            }
-
-                            override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                                //onImageCaptured(Uri.fromFile(photoFile))
-                                viewModel.savePhoto(Uri.fromFile(photoFile))
-                            }
-
-                        }
-                    )
-
- */
-
-
-
-                },
-                /*
-            modifier = Modifier
-                .align(androidx.compose.ui.Alignment.BottomCenter)
-                .padding(40.dp)
-                .size(70.dp),
-            contentColor = Color.White,
-            shape = RoundedCornerShape(50),
-
-             */
+                          },
 
 
             ) {
