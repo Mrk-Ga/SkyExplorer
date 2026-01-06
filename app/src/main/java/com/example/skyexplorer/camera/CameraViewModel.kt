@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +16,9 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.example.skyexplorer.data.*
 
 class CameraViewModel (
@@ -24,33 +28,6 @@ class CameraViewModel (
     //private val _state = MutableStateFlow(CameraState())
     //val state = _state.asStateFlow()
 
-/*
-    fun chooseConstellationToPhoto(){
-        val photoFile = File(
-            context.externalMediaDirs.first(),
-            SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
-                .format(System.currentTimeMillis()) + ".jpg"
-        )
-
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
-        imageCapture.takePicture(
-            outputOptions,
-            ContextCompat.getMainExecutor(context),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    exc.printStackTrace()
-                }
-
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    onImageCaptured(Uri.fromFile(photoFile))
-                }
-
-            }
-        )
-    }
-
- */
 
     fun loadConstellationsInfo(): List<ConstellationInfo> {
         val context = getApplication<Application>().applicationContext
@@ -61,54 +38,79 @@ class CameraViewModel (
 
         return Json.decodeFromString(json)
     }
+    var pendingPhotoUri by mutableStateOf<Uri?>(null)
+        private set
 
-    fun takePhoto(imageCapture: ImageCapture,context: Context, customName: String) {
-        val timestamp = SimpleDateFormat(dateFormat, Locale.US)
-            .format(System.currentTimeMillis())
-
-        val photoFile = File(
-            context.externalMediaDirs.first(),
-            "${customName}_${timestamp}.${photoFilesFormat}"
-        )
-
+    fun takePhoto(
+        imageCapture: ImageCapture,
+        context: Context,
+        onPhotoTaken: () -> Unit
+    ) {
+        val photoFile = createTempPhotoFile(context)
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(context),
             object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    exc.printStackTrace()
+                override fun onImageSaved(result: ImageCapture.OutputFileResults) {
+                    pendingPhotoUri = Uri.fromFile(photoFile)
+                    onPhotoTaken()
                 }
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    savePhoto(Uri.fromFile(photoFile))
+                override fun onError(exc: ImageCaptureException) {
+                    exc.printStackTrace()
                 }
             }
         )
     }
 
+    fun confirmConstellation(constellation: String) {
+        pendingPhotoUri?.let { uri ->
+            viewModelScope.launch {
+                val oldFile = File(uri.path!!)
+
+                val timestamp = SimpleDateFormat(
+                    "yyyyMMdd-HHmmss",
+                    Locale.US
+                ).format(System.currentTimeMillis())
+
+                val newFile = File(
+                    getApplication<Application>()
+                        .applicationContext
+                        .externalMediaDirs
+                        .first(),
+                    "${constellation}_${timestamp}.jpg"
+                )
+
+                oldFile.copyTo(newFile, overwrite = true)
+                oldFile.delete()
+
+                repo.insertPhoto(Uri.fromFile(newFile).toString())
+            }
+        }
+        pendingPhotoUri = null
+    }
+
+    fun cancelPhoto() {
+        pendingPhotoUri = null
+    }
+
     fun savePhoto(uri: Uri) {
-        /*
-        val context = getApplication<Application>().applicationContext
-
-        val customName = "Orion"   // np. nazwa gwiazdozbioru
-
-        val timestamp = SimpleDateFormat(dateFormat, Locale.US)
-            .format(System.currentTimeMillis())
-
-        val photoFile = File(
-            context.externalMediaDirs.first(),
-            "${customName}_$timestamp.${photoFilesFormat}"
-        )
-
-         */
-
 
 
         viewModelScope.launch {
             repo.insertPhoto(uri.toString())
         }
+    }
+
+    private fun createTempPhotoFile(context: Context): File {
+        val storageDir = context.cacheDir
+        return File.createTempFile(
+            "photo_",
+            ".jpg",
+            storageDir
+        )
     }
 
 
