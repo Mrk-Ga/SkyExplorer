@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
 
             setContent {
                 SkyExplorerTheme {
-                    GradientBackground {
+                    //GradientBackground {
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
                             val repository = SkyMapRepositoryImpl(application)
                             AppNavHost(navController, repository)
                         }
-                    }
+                    //}
 
             }
         }

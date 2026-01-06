@@ -46,9 +46,9 @@ class PhotoGalleryViewModel(
     }
 
     fun photoFilter(photoList: List<PhotoEntity>, constellationName: String): List<PhotoEntity> {
-        val regex = Regex(".*/${Regex.escape(constellationName).replace(" ", "%20")}_.*\\.jpg$")
+        val regex = Regex(".*/${Regex.escape(constellationName).replace(" ", "%20")}_.*\\.${photoFilesFormat}$")
 
-        Log.d("PhotoGalleryViewModel", "PhotoList: $photoList")
+        //Log.d("PhotoGalleryViewModel", "PhotoList: $photoList")
 
         return photoList.filter { regex.matches(it.uri) }
     }

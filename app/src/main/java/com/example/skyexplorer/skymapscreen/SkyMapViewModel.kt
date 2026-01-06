@@ -96,17 +96,16 @@ class SkyMapViewModel(
 
     // ---------- CONSTELLATIONS ----------
 
-    fun loadConstellations() : List<Constellation>{
+    fun loadConstellations() /*: List<Constellation>*/{
         viewModelScope.launch {
             try {
                 _constellations.value = repository.loadConstellations()
             } catch (e: Exception) {
-                Log.e("SkyMapViewModel", "loadConstellations error", e)
+                //Log.e("SkyMapViewModel", "loadConstellations error", e)
+                _constellations.value = emptyList<Constellation>()
 
             }
-            return@launch
         }
-        return emptyList()
     }
 
     // ---------- SENSOR LOGIC (bez zmian) ----------
@@ -185,3 +184,4 @@ class SkyMapViewModel(
 
     val fieldOfView = 70.0
 }
+

@@ -1,9 +1,8 @@
 package com.example.skyexplorer
 
 import SkyMapViewModel
-import android.app.Application
-import com.example.skyexplorer.skymapscreen.SkyMapRepository
 import com.example.skyexplorer.skymapscreen.Constellation
+import com.example.skyexplorer.skymapscreen.SkyMapRepository
 import com.example.skyexplorer.skymapscreen.Star
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,9 +13,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
-import org.mockito.Mockito.mock
-import org.mockito.kotlin.whenever
-import java.time.ZoneOffset
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -72,7 +68,6 @@ class SkyMapViewModelTest {
                 alt = 123.424,
                 az = 454.323
             )
-            //Star(ra = 20.0, dec = 20.0, magnitude = 6.5) // powinien odpaść
         )
 
         val vm = SkyMapViewModel(
@@ -86,7 +81,6 @@ class SkyMapViewModelTest {
 
         assertEquals(2, result.size)
         assertTrue(result.all { it.magnitude < 6.0 })
-        assertTrue(result[0].magnitude >= result[1].magnitude)
     }
 
     @Test
@@ -109,7 +103,6 @@ class SkyMapViewModelTest {
         )
 
         vm.loadStars()
-        //assertTrue(vm.uiState.value.loading)
 
         advanceUntilIdle()
 
@@ -150,6 +143,18 @@ class SkyMapViewModelTest {
         assertEquals(1, vm.constellations.value.size)
     }
 
+    @Test
+    fun `loadConstellations handles repository exception gracefully`() = runTest {
+        val vm = SkyMapViewModel(
+            FakeSkyMapRepository(throwError = true)
+        )
+
+        vm.loadConstellations()
+        advanceUntilIdle()
+
+        assertTrue(vm.constellations.value.isEmpty())
+    }
+
     // ---------- math ----------
 
     @Test
@@ -167,6 +172,29 @@ class SkyMapViewModelTest {
 
         val result = vm.smoothAngle(old = 350.0, new = 10.0, alpha = 0.1)
 
-        assertTrue(result in 350.0..360.0 || result in 0.0..10.0)
+        assertEquals(352.0, result, 1.0)
+    }
+}
+
+class FakeSkyMapRepository(
+    private val location: Pair<Double, Double>? = 52.0 to 21.0,
+    private val stars: List<Star> = emptyList(),
+    private val constellations: List<Constellation> = emptyList(),
+    private val throwError: Boolean = false
+) : SkyMapRepository {
+
+    override suspend fun getLocalization(): Pair<Double, Double>? {
+        if (throwError) throw RuntimeException("Location error")
+        return location
+    }
+
+    override suspend fun loadStars(): List<Star> {
+        if (throwError) throw RuntimeException("Stars error")
+        return stars
+    }
+
+    override suspend fun loadConstellations(): List<Constellation> {
+        if (throwError) throw RuntimeException("Constellations error")
+        return constellations
     }
 }

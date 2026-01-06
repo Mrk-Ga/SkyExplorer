@@ -71,7 +71,6 @@ fun CameraPreview(viewModel: CameraViewModel) {
             )
 
         } else {
-            // 🖼 PODGLĄD ZDJĘCIA
             AsyncImage(
                 model = pendingPhoto,
                 contentDescription = null,

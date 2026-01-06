@@ -119,5 +119,12 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation(kotlin("test"))
 
+    // Mockk for mocking in tests
+    testImplementation("io.mockk:mockk-android:1.13.11")
+
+    // Coroutines test
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+
+
 
 }

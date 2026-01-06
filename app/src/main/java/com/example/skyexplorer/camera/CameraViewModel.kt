@@ -39,7 +39,6 @@ class CameraViewModel (
         return Json.decodeFromString(json)
     }
     var pendingPhotoUri by mutableStateOf<Uri?>(null)
-        private set
 
     fun takePhoto(
         imageCapture: ImageCapture,
@@ -71,7 +70,7 @@ class CameraViewModel (
                 val oldFile = File(uri.path!!)
 
                 val timestamp = SimpleDateFormat(
-                    "yyyyMMdd-HHmmss",
+                    dateFormat,
                     Locale.US
                 ).format(System.currentTimeMillis())
 
@@ -80,7 +79,7 @@ class CameraViewModel (
                         .applicationContext
                         .externalMediaDirs
                         .first(),
-                    "${constellation}_${timestamp}.jpg"
+                    "${constellation}_${timestamp}.${photoFilesFormat}"
                 )
 
                 oldFile.copyTo(newFile, overwrite = true)
@@ -108,19 +107,12 @@ class CameraViewModel (
         val storageDir = context.cacheDir
         return File.createTempFile(
             "photo_",
-            ".jpg",
+            photoFilesFormat,
             storageDir
         )
     }
 
 
-
-
-    val photos = repo.getAllPhotos().stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(),
-        emptyList()
-    )
 
 
 }
