@@ -5,21 +5,20 @@ import android.content.Context
 import android.net.Uri
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import com.example.skyexplorer.data.constellationInfoFilename
+import com.example.skyexplorer.data.dateFormat
+import com.example.skyexplorer.data.photoFilesFormat
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import com.example.skyexplorer.data.*
 
 class CameraViewModel (
     private val repo: LocalRepository,

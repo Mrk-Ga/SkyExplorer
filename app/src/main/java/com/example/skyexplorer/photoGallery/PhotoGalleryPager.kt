@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -28,9 +27,13 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.skyexplorer.PhotoEntity
+import com.example.skyexplorer.data.assetsConstellationFileName
+import com.example.skyexplorer.data.cancelInformationButton
+import com.example.skyexplorer.data.deleteInformationButton
+import com.example.skyexplorer.data.deletePhotoDialogTitle
+import com.example.skyexplorer.data.deletePhototDialogText
 import com.example.skyexplorer.ui.theme.StarBlue
 import kotlinx.coroutines.launch
-import com.example.skyexplorer.data.*
 
 @Composable
 fun PhotoPager(

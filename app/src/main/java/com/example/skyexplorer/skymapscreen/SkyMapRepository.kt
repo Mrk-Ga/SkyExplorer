@@ -1,8 +1,12 @@
 package com.example.skyexplorer.skymapscreen
 
+import kotlinx.coroutines.flow.StateFlow
+
 interface SkyMapRepository {
     suspend fun getLocalization(): Pair<Double, Double>?
-    suspend fun loadStars(): List<Star>
+    suspend fun loadStars()
+    suspend fun loadConstellations()
 
-    suspend fun loadConstellations(): List<Constellation>
+    val stars: StateFlow<List<Star>>
+    val constellations: StateFlow<List<Constellation>>
 }

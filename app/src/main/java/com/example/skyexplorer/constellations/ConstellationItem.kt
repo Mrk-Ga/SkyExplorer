@@ -1,6 +1,5 @@
 package com.example.skyexplorer.constellations
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.skyexplorer.data.*
+import com.example.skyexplorer.data.photoFilesFormat
+
 @Composable
 fun ConstellationItem(
     mainContent: String,

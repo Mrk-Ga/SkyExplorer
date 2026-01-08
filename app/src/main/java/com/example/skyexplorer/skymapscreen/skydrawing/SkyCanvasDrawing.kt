@@ -1,6 +1,5 @@
 package com.example.skyexplorer.skymapscreen
 
-import SkyMapViewModel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi

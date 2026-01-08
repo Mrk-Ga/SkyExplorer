@@ -1,10 +1,10 @@
 package com.example.skyexplorer
 
 
-import SkyMapViewModel
 import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Build
+import com.example.skyexplorer.skymapscreen.SkyMapViewModel
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi

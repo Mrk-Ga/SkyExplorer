@@ -1,3 +1,5 @@
+package com.example.skyexplorer.skymapscreen
+
 import android.Manifest
 import android.content.Context
 import android.hardware.Sensor
@@ -5,7 +7,6 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.getValue
@@ -13,9 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.skyexplorer.skymapscreen.SkyMapRepository
-import com.example.skyexplorer.skymapscreen.Constellation
-import com.example.skyexplorer.skymapscreen.Star
 import com.example.skyexplorer.skymapscreen.raDecToAltAz
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,11 +36,11 @@ class SkyMapViewModel(
     private val _uiState = MutableStateFlow(SkyMapUiState(false, false))
     val uiState: StateFlow<SkyMapUiState> = _uiState
 
-    private val _stars = MutableStateFlow<List<Star>>(emptyList())
-    val stars: StateFlow<List<Star>> = _stars
+    private val _visibleStars = MutableStateFlow<List<Star>>(emptyList())
+    val stars: StateFlow<List<Star>> = _visibleStars
 
-    private val _constellations = MutableStateFlow<List<Constellation>>(emptyList())
-    val constellations: StateFlow<List<Constellation>> = _constellations
+    val constellations: StateFlow<List<Constellation>> = repository.constellations
+
 
     // ---------- STARS LOGIC ----------
 
@@ -57,16 +55,18 @@ class SkyMapViewModel(
             _uiState.value = _uiState.value.copy(loading = true)
 
             try {
+                //if(repository.stars.value != emptyList<Star>())
+                    repository.loadStars()
                 val loc = repository.getLocalization()
                 if (loc == null) {
-                    _stars.value = emptyList()
+                    _visibleStars.value = emptyList()
                     return@launch
                 }
 
                 val (lat, lon) = loc
                 val timeUtc = ZonedDateTime.now(ZoneOffset.UTC)
 
-                val visibleStars = repository.loadStars()
+                val visibleStars = repository.stars.value
                     .map { star ->
                         val cords = raDecToAltAz(
                             raDeg = star.ra,
@@ -84,7 +84,7 @@ class SkyMapViewModel(
                     .filter { it.magnitude < 6.0 }
                     .sortedByDescending { it.magnitude }
 
-                _stars.value = visibleStars
+                _visibleStars.value = visibleStars
 
             } catch (e: Exception) {
                 //Log.e("SkyMapViewModel", "loadStars error", e)
@@ -96,14 +96,13 @@ class SkyMapViewModel(
 
     // ---------- CONSTELLATIONS ----------
 
-    fun loadConstellations() /*: List<Constellation>*/{
+    fun loadConstellations() {
         viewModelScope.launch {
             try {
-                _constellations.value = repository.loadConstellations()
+                //if(repository.constellations.value != emptyList<Constellation>())
+                    repository.loadConstellations()
             } catch (e: Exception) {
                 //Log.e("SkyMapViewModel", "loadConstellations error", e)
-                _constellations.value = emptyList<Constellation>()
-
             }
         }
     }
@@ -184,4 +183,3 @@ class SkyMapViewModel(
 
     val fieldOfView = 70.0
 }
-

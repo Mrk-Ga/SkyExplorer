@@ -13,6 +13,8 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -25,12 +27,15 @@ class SkyMapRepositoryImpl(
     override suspend fun getLocalization() = getLocalizationSuspend(application)
 
 
-    private var starsCache: List<Star>? = null
-    private var constellationsCache: List<Constellation>? = null
+    private val _stars = MutableStateFlow<List<Star>>(emptyList())
+    override val stars = _stars.asStateFlow()
 
-    override suspend fun loadStars(): List<Star> {
-        if (starsCache != null) {
-            return starsCache!!
+    private val _constellations = MutableStateFlow<List<Constellation>>(emptyList())
+    override val constellations = _constellations.asStateFlow()
+
+    override suspend fun loadStars() {
+        if (_stars.value.isNotEmpty()) {
+            return
         }
 
         val json = application.assets
@@ -39,13 +44,12 @@ class SkyMapRepositoryImpl(
             .use { it.readText() }
             .replace("NaN", "null")
 
-        starsCache = Json.Default.decodeFromString(json)
-        return starsCache!!
+        _stars.value = Json.Default.decodeFromString(json)
     }
 
-    override suspend fun loadConstellations(): List<Constellation> {
-        if (constellationsCache != null) {
-            return constellationsCache!!
+    override suspend fun loadConstellations() {
+        if (_constellations.value.isNotEmpty()) {
+            return
         }
 
         val json = application.assets
@@ -53,8 +57,7 @@ class SkyMapRepositoryImpl(
             .bufferedReader()
             .use { it.readText() }
 
-        constellationsCache = Json.Default.decodeFromString(json)
-        return constellationsCache!!
+        _constellations.value = Json.Default.decodeFromString(json)
     }
 
     @androidx.annotation.RequiresPermission(
