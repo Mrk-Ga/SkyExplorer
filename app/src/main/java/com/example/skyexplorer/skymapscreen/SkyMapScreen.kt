@@ -6,7 +6,9 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -18,8 +20,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.skyexplorer.components.AppNavigationBar
 import com.example.skyexplorer.data.localizationPermissionText
 import com.example.skyexplorer.data.mapRenderingInfo
@@ -61,6 +66,7 @@ fun SkyMapScreen(
 
     Scaffold(
         containerColor = Color.Transparent,
+        contentWindowInsets = WindowInsets(0),
         bottomBar = {
 
             AppNavigationBar(
@@ -90,4 +96,17 @@ fun SkyMapScreen(
 
     }
 
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
+@Composable
+@Preview
+fun SkyMapScreenPreview(){
+    SkyMapScreen(
+        viewModel = viewModel(),
+        onNavigateToCamera = {},
+        onNavigateToConstellations = {},
+        onNavigateToSkyMap = {}
+    )
 }
