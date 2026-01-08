@@ -36,7 +36,6 @@ fun CameraPreview(viewModel: CameraViewModel) {
     Box(modifier = Modifier.fillMaxSize()) {
 
         if (pendingPhoto == null) {
-            // 📷 KAMERA
             AndroidView(
                 factory = { ctx ->
                     val previewView = PreviewView(ctx)
