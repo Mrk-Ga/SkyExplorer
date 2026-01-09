@@ -38,7 +38,6 @@ class PhotoGalleryViewModel(
         )
 
 
-    // (opcjonalnie) Usuwanie zdjęcia z bazy
     fun deletePhoto(photo: PhotoEntity) {
         viewModelScope.launch {
             repo.deletePhoto(photo)
@@ -46,7 +45,7 @@ class PhotoGalleryViewModel(
     }
 
     fun photoFilter(photoList: List<PhotoEntity>, constellationName: String): List<PhotoEntity> {
-        val regex = Regex(".*/${Regex.escape(constellationName).replace(" ", "%20")}_.*\\.${photoFilesFormat}$")
+        val regex = Regex(".*/${Regex.escape(constellationName).replace(" ", "_")}_.*\\.${photoFilesFormat}$")
 
         //Log.d("PhotoGalleryViewModel", "PhotoList: $photoList")
 

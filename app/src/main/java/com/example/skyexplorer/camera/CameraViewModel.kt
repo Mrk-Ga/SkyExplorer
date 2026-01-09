@@ -78,7 +78,7 @@ class CameraViewModel (
                         .applicationContext
                         .externalMediaDirs
                         .first(),
-                    "${constellation}_${timestamp}.${photoFilesFormat}"
+                    "${constellation.replace(" ","_")}_${timestamp}.${photoFilesFormat}"
                 )
 
                 oldFile.copyTo(newFile, overwrite = true)
