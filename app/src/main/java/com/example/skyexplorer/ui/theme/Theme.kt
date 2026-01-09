@@ -42,23 +42,3 @@ fun SkyExplorerTheme(
         content = content
     )
 }
-
-@Composable
-fun GradientBackground(
-    content: @Composable () -> Unit
-) {
-    val spaceBlue = Color(0xFF0A1A3A)
-    val spaceBlack = Color(0xFF000000)
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(spaceBlue, spaceBlack)
-                )
-            )
-    ) {
-        content()
-    }
-}

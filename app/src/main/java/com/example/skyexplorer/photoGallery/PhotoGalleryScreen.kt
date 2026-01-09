@@ -24,16 +24,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.skyexplorer.components.BouncyButton
 //import com.example.skyexplorer.components.BouncyButton
@@ -59,6 +63,8 @@ fun PhotoGalleryScreen(
         initialPage = 0,
         pageCount = { filteredPhotos.size }
     )
+
+    val pagerKey = filteredPhotos.size
 
 
 
@@ -113,101 +119,111 @@ fun PhotoGalleryScreen(
             }
         }
     ) { innerPadding ->
-
-
-
-        LazyColumn (
+        Box(
             modifier = Modifier
-                .padding(top=30.dp),
-            contentPadding = PaddingValues(
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color(0xFF050814)
+                        )
+                    )
+                )
+        ) {
+
+
+            LazyColumn(
+                modifier = Modifier
+                    .padding(top = 30.dp),
+                contentPadding = PaddingValues(
                     //top = innerPadding.calculateTopPadding(),
                     bottom = innerPadding.calculateBottomPadding()
-            )
-
-        ){
-
-            item{
-                PhotoPager(filteredPhotos, constellationName,
-                    onDeletePhoto = {
-                        viewModel.deletePhoto(it)
-                    },
-                    //pagerState = pagerState
-
                 )
-            }
 
-            item{
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 20.dp),
-                        //.size(height = 300.dp, width = 600.dp)
+            ) {
 
-                    contentAlignment = Alignment.Center,
+                item {
+                    key(pagerKey) {
+                        PhotoPager(
+                            filteredPhotos, constellationName,
+                            onDeletePhoto = {
+                                viewModel.deletePhoto(it)
+                            },
+                            pagerState = pagerState
 
-                ){
-                    Column(
-                        modifier = Modifier
-                            .padding(5.dp)
-                            .fillMaxSize()
-                            .align(Alignment.Center),
-                    ) {
-
-
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally),
-                            text = photoInfo.polish,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = MaterialTheme.typography.headlineMedium.fontSize
-
-                        )
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally),
-                            text = "lat. " + photoInfo.latin,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = MaterialTheme.typography.headlineMedium.fontSize
                         )
                     }
                 }
-            }
 
-
-            item{
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        //.size(height = 300.dp, width = 600.dp)
-                        .padding(horizontal = 10.dp, vertical = 30.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Black),
-                    contentAlignment = Alignment.Center,
-
-
-
-                ){
-                    Text(
-                        text = photoInfo.description,
+                item {
+                    Box(
                         modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxSize(),
+                            .fillMaxSize()
+                            .padding(top = 20.dp),
+                        //.size(height = 300.dp, width = 600.dp)
+
+                        contentAlignment = Alignment.Center,
+
+                        ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .fillMaxSize()
+                                .align(Alignment.Center),
+                        ) {
+
+
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally),
+                                text = photoInfo.polish,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                                letterSpacing = 2.sp
+
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally),
+                                text = photoInfo.latin,
+                                fontWeight = FontWeight.Thin,
+                                fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                                letterSpacing = 2.sp
+                            )
+                        }
+                    }
+                }
+
+
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            //.size(height = 300.dp, width = 600.dp)
+                            .padding(horizontal = 10.dp, vertical = 30.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Black),
+                        contentAlignment = Alignment.Center,
+
+
+                        ) {
+                        Text(
+                            text = photoInfo.description,
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxSize(),
                             //.align(Alignment.CenterHorizontally),
-                        textAlign = TextAlign.Justify
-                    )
+                            textAlign = TextAlign.Justify,
+                            lineHeight = 23.sp,
+                            color = Color.White.copy(alpha = 0.85f)
+                        )
+
+                    }
 
                 }
 
             }
-
         }
-
-
-
-
-
-
-
 
     }
 }

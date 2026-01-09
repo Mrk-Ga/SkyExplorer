@@ -29,8 +29,7 @@ fun ConstellationsList(
         contentPadding = PaddingValues(15.dp),
         columns = GridCells.Adaptive(minSize = 128.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-
+        verticalArrangement = Arrangement.spacedBy(12.dp),
 
     ) {
         items(items) { item ->

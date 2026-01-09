@@ -7,17 +7,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -33,20 +38,23 @@ import com.example.skyexplorer.data.deleteInformationButton
 import com.example.skyexplorer.data.deletePhotoDialogTitle
 import com.example.skyexplorer.data.deletePhototDialogText
 import com.example.skyexplorer.ui.theme.StarBlue
+import com.example.skyexplorer.ui.theme.StarLightBlue
 import kotlinx.coroutines.launch
 
 @Composable
 fun PhotoPager(
     photos: List<PhotoEntity>,
     constellationName: String,
-    //pagerState: PagerState,
+    pagerState: PagerState,
     onDeletePhoto: (PhotoEntity) ->Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedPhoto by remember { mutableStateOf<PhotoEntity?>(null) }
     val scope = rememberCoroutineScope()
 
-    val pagerState = rememberPagerState(pageCount = { photos.size })
+    //val pagerState = rememberPagerState(pageCount = { photos.size })
+
+
 
     // Dialog potwierdzający usunięcie
     if (showDialog && selectedPhoto != null) {
@@ -59,25 +67,8 @@ fun PhotoPager(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-
-                            val pageToRemove = pagerState.currentPage
-                            val sizeBeforeDelete = photos.size
-
-                            // obliczamy stronę PO usunięciu
-                            val newPage = when {
-                                sizeBeforeDelete <= 1 -> 0
-                                pageToRemove >= sizeBeforeDelete - 1 -> sizeBeforeDelete - 2
-                                else -> pageToRemove
-                            }
-
                             onDeletePhoto(selectedPhoto!!)
                             showDialog = false
-
-                                scope.launch {
-                                    if (newPage >= 0 && photos.size > 1) {
-                                        pagerState.scrollToPage(newPage)
-                                    }
-                                }
                         }
                 )
             },
@@ -87,7 +78,7 @@ fun PhotoPager(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable { showDialog = false },
-                    color = StarBlue
+                    color = StarLightBlue
                 )
             },
             title = { Text(deletePhotoDialogTitle) },
@@ -110,9 +101,10 @@ fun PhotoPager(
             modifier = Modifier
                 //clip(RoundedCornerShape(12.dp))
                 .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(15.dp))
                 .fillMaxWidth()
                 .height(300.dp),
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.Crop,
             alignment = Alignment.Center
         )
 
@@ -126,7 +118,7 @@ fun PhotoPager(
         state = pagerState,
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp), // Możesz dostosować
+            .height(300.dp),
         pageSpacing = 16.dp
     ) { page ->
 
@@ -139,6 +131,7 @@ fun PhotoPager(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(15.dp))
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onLongPress = {
@@ -147,7 +140,7 @@ fun PhotoPager(
                             }
                         )
                     },
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
 
 

@@ -44,6 +44,7 @@ fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
     NavHost(
         navController = navController,
         startDestination = skyMapScreen,
+        /*
         enterTransition = {
             slideInHorizontally(
                 initialOffsetX = { it },
@@ -68,21 +69,45 @@ fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
                 animationSpec = tween(animationDuration)
             ) + fadeOut()
         }
+
+         */
     ){
 
 
-        composable(skyMapScreen)  {
+        composable(skyMapScreen,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = tween(animationDuration)
+                ) + fadeIn()
+            }
+
+
+        )  {
 
             SkyMapScreen(
                 viewModel = skyMapViewModel,
                 onNavigateToCamera = { navController.navigate(cameraScreen) },
                 onNavigateToConstellations = { navController.navigate(constellationsScreen) },
-                onNavigateToSkyMap = { navController.navigate(skyMapScreen) }
+                onNavigateToSkyMap = {},//{ navController.navigate(skyMapScreen) }
             )
         }
 
 
-        composable(cameraScreen) {
+        composable(cameraScreen,
+            enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { -it },
+                animationSpec = tween(animationDuration)
+            ) + fadeIn()},
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(animationDuration)
+                ) + fadeOut()
+            }
+        ) {
+
             val app = LocalContext.current.applicationContext as SkyExplorerApp
             val repo = app.cameraRepository
             val cameraViewModel: CameraViewModel = viewModel(
@@ -94,13 +119,27 @@ fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
             )
         }
 
-        composable(constellationsScreen){
+        composable(constellationsScreen,
+                enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(animationDuration)
+                ) + fadeIn()},
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(animationDuration)
+                ) + fadeOut()
+            }
+
+
+        ){
             val constellationsViewModel: ConstellationsViewModel = viewModel()
             ConstellationsScreen(
                 viewModel = constellationsViewModel,
 
                 onNavigateToCamera = { navController.navigate(cameraScreen) },
-                onNavigateToConstellations = { navController.navigate(constellationsScreen) },
+                onNavigateToConstellations = {},//{ navController.navigate(constellationsScreen) },
                 onNavigateToSkyMap = { navController.navigate(skyMapScreen) },
                 onNavigateToPhotoGallery = { item ->
                     navController.navigate("gallery/${item}")
@@ -109,11 +148,24 @@ fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
             )
         }
 
+
+
         composable(
             route = photoGalleryScreen,
             arguments = listOf(
                 navArgument("item") { type = NavType.StringType }
-            )
+            ),
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(animationDuration)
+                ) + fadeIn()},
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(animationDuration)
+                ) + fadeOut()
+            }
         ) {
             val viewModel: PhotoGalleryViewModel = viewModel()
             PhotoGalleryScreen(

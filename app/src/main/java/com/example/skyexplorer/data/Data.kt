@@ -35,5 +35,5 @@ package com.example.skyexplorer.data
     val mapRenderingInfo :String = "Wczytywanie mapy..."
 
 
-    val animationDuration: Int = 500
+    val animationDuration: Int = 700
 
