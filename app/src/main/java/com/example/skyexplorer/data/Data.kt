@@ -29,11 +29,13 @@ package com.example.skyexplorer.data
     val deletePhototDialogText :String = "Czy na pewno chcesz usunąć zdjęcie?"
     val sharePhotoTitle :String = "Udostępnij"
 
+    val photoGalleryScreenItemName: String = "item"
+
 
     //SKYMAP
     val localizationPermissionText :String = "Wymagane pozwolenie na lokalizację"
     val mapRenderingInfo :String = "Wczytywanie mapy..."
 
 
-    val animationDuration: Int = 700
+    val animationDuration: Int = 800
 

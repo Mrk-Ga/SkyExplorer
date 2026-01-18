@@ -107,7 +107,7 @@ class SkyMapViewModel(
         }
     }
 
-    // ---------- SENSOR LOGIC (bez zmian) ----------
+    // ---------- SENSOR LOGIC ----------
 
     data class ViewDirection(
         val azimuth: Double = 0.0,
@@ -171,7 +171,7 @@ class SkyMapViewModel(
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
     }
 
-    // ---------- MATH (TESTOWALNE) ----------
+    // ---------- MATH ----------
 
     internal fun smooth(old: Double, new: Double, alpha: Double = 0.1): Double =
         old + alpha * (new - old)

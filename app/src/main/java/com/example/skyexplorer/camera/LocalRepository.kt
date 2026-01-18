@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import java.io.File
 import androidx.core.net.toUri
 
-class LocalRepository(context: Context) {
+class LocalRepository(context: Context):PhotoRepository {
     private val db = Room.databaseBuilder(
         context.applicationContext,
         AppDatabase::class.java,
@@ -18,19 +18,21 @@ class LocalRepository(context: Context) {
 
     private val photoDao = db.photoDao()
 
-    fun getAllPhotos(): Flow<List<PhotoEntity>> = photoDao.getAllPhotos()
+    override fun getAllPhotos(): Flow<List<PhotoEntity>> = photoDao.getAllPhotos()
 
-    suspend fun insertPhoto(uri: String) {
+    override suspend fun insertPhoto(uri: String) {
         photoDao.insertPhoto(PhotoEntity(uri = uri))
     }
 
-    suspend fun deletePhoto(photo: PhotoEntity) {
+    override suspend fun deletePhoto(photo: PhotoEntity) {
         Log.d("DELETE PHOTO", photo.toString())
 
         deleteFileIfExists(photo.uri)
 
         photoDao.deletePhoto(photo)
     }
+
+
 
     private fun deleteFileIfExists(uriString: String) {
         try {

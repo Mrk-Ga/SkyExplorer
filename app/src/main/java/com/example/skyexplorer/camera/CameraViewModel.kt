@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class CameraViewModel (
-    private val repo: LocalRepository,
+    private val repo: PhotoRepository,
     application: Application
 ) : AndroidViewModel(application) {
     //private val _state = MutableStateFlow(CameraState())
@@ -109,6 +109,12 @@ class CameraViewModel (
             photoFilesFormat,
             storageDir
         )
+    }
+
+    fun savePhotoString(uri: String) {
+        viewModelScope.launch {
+            repo.insertPhoto(uri)
+        }
     }
 
 

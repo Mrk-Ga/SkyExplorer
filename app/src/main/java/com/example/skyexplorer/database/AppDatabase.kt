@@ -22,6 +22,9 @@ interface PhotoDao {
 
     @Delete
     suspend fun deletePhoto(photo: PhotoEntity)
+
+    @Query("SELECT * FROM photos")
+    suspend fun getAllPhotosOnce(): List<PhotoEntity>
 }
 
 @Entity(tableName = "photos")

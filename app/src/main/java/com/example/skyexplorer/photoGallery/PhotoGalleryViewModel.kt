@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.skyexplorer.PhotoEntity
 import com.example.skyexplorer.camera.LocalRepository
 import com.example.skyexplorer.camera.ConstellationInfo
+import com.example.skyexplorer.camera.PhotoRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -24,6 +25,7 @@ import com.example.skyexplorer.data.*
 class PhotoGalleryViewModel(
     application: Application,
     //val constellationName: String
+    //private val repo: PhotoRepository
 ) : AndroidViewModel(application) {
 
     private val repo = LocalRepository(application)

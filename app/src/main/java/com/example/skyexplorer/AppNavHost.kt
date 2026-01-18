@@ -22,6 +22,7 @@ import androidx.navigation.navArgument
 import com.example.skyexplorer.camera.CameraScreen
 import com.example.skyexplorer.camera.CameraViewModel
 import com.example.skyexplorer.camera.CameraViewModelFactory
+import com.example.skyexplorer.camera.LocalRepository
 import com.example.skyexplorer.constellations.ConstellationsScreen
 import com.example.skyexplorer.constellations.ConstellationsViewModel
 import com.example.skyexplorer.photoGallery.PhotoGalleryScreen
@@ -44,46 +45,10 @@ fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
     NavHost(
         navController = navController,
         startDestination = skyMapScreen,
-        /*
-        enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it },
-                animationSpec = tween(animationDuration)
-            ) + fadeIn()
-        },
-        exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it },
-                animationSpec = tween(animationDuration)
-            ) + fadeOut()
-        },
-        popEnterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { -it },
-                animationSpec = tween(animationDuration)
-            ) + fadeIn()
-        },
-        popExitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { it },
-                animationSpec = tween(animationDuration)
-            ) + fadeOut()
-        }
-
-         */
     ){
 
 
-        composable(skyMapScreen,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { -it },
-                    animationSpec = tween(animationDuration)
-                ) + fadeIn()
-            }
-
-
-        )  {
+        composable(skyMapScreen)  {
 
             SkyMapScreen(
                 viewModel = skyMapViewModel,
@@ -130,7 +95,13 @@ fun AppNavHost(navController: NavHostController, repository: SkyMapRepository) {
                     targetOffsetX = { -it },
                     animationSpec = tween(animationDuration)
                 ) + fadeOut()
-            }
+            } ,
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(animationDuration)
+                ) + fadeOut()
+            },
 
 
         ){

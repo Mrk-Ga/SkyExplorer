@@ -44,6 +44,7 @@ fun ConstellationsScreen(
         Box(
             modifier = Modifier
                 .background(
+
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
@@ -56,10 +57,6 @@ fun ConstellationsScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
-                    .background(
-                        color = Color(0xFF0B1025).copy(alpha = 0.7f),
-                        shape = RoundedCornerShape(24.dp),
-                    )
 
             ) {
 
