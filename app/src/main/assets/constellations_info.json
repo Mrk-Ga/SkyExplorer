@@ -1,0 +1,132 @@
+[
+  {
+    "polish": "Wielka Niedźwiedzica",
+    "latin": "Ursa Major",
+    "description": "Nazwa Ursa Major wywodzi się z greckiego mitu o Kallisto, przemienionej przez Herę w niedźwiedzia. Zeus umieścił ją na niebie, tworząc jedną z najbardziej rozpoznawalnych konstelacji półkuli północnej. Zawiera Wielki Wóz, który ułatwia odnalezienie Gwiazdy Polarnej i pozostaje widoczny przez cały rok w Polsce."
+  },
+  {
+    "polish": "Mała Niedźwiedzica",
+    "latin": "Ursa Minor",
+    "description": "W mitologii greckiej Mała Niedźwiedzica wiązana jest z synem Kallisto, Arkasem, którego Zeus przeniósł na niebo, by połączyć go z matką. Najjaśniejsza gwiazda, Polaris, pełni funkcję Gwiazdy Polarnej. Konstelacja tworzy Mały Wóz i jako okołobiegunowa pozostaje widoczna w Polsce przez cały rok."
+  },
+  {
+    "polish": "Kasjopeja",
+    "latin": "Cassiopeia",
+    "description": "Konstelacja nazwana od królowej Kasjopei, znanej z pychy wobec nereid. Zeus umieścił ją na niebie w pozycji odwróconej, by przypominała o jej winie. Jej charakterystyczny kształt litery W lub M czyni ją łatwą do odnalezienia. Leży blisko Gwiazdy Polarnej i jest kluczem do orientacji na północnym niebie."
+  },
+  {
+    "polish": "Cefeusz",
+    "latin": "Cepheus",
+    "description": "Cefeusz, mąż Kasjopei i król Etiopii z mitologii greckiej, został umieszczony na niebie przez bogów wraz z rodziną. Konstelacja przypomina dom z dachem i leży niedaleko Kasjopei. Jest okołobiegunowa i zawiera liczne gwiazdy zmienne oraz mgławice, co czyni ją atrakcyjną dla obserwatorów."
+  },
+  {
+    "polish": "Smok",
+    "latin": "Draco",
+    "description": "Draco wywodzi swą nazwę z mitu o smoku strzegącym złotych jabłek Hesperyd. Herakles miał go pokonać podczas jednej z prac. Gwiazdy konstelacji wiją się między obiema Niedźwiedzicami. Zawiera Thuban, dawną Gwiazdę Polarną, dominującą w niebie około 2700 lat p.n.e."
+  },
+  {
+    "polish": "Łabędź",
+    "latin": "Cygnus",
+    "description": "Cygnus nawiązuje do mitu o Zeusa przemienionego w łabędzia. Konstelacja przypomina ptaka lecącego po Drodze Mlecznej. Jej najjaśniejsza gwiazda Deneb tworzy Letni Trójkąt. Obszar bogaty w mgławice i gromady czyni ją jednym z najbardziej fotogenicznych fragmentów nieba."
+  },
+  {
+    "polish": "Lutnia",
+    "latin": "Lyra",
+    "description": "Nazwa Lyra pochodzi od liry Orfeusza, której dźwięki oczarowywały bogów. Po jego śmierci Zeus umieścił instrument na niebie. Konstelacja zawiera jasną Wegę, jedną z najbliższych nam gwiazd. Słynie także z Mgławicy Pierścień (M57), popularnego obiektu do obserwacji amatorskich."
+  },
+  {
+    "polish": "Orzeł",
+    "latin": "Aquila",
+    "description": "Aquila przedstawia mitycznego orła Zeusa, który przenosił jego pioruny. Najjaśniejsza gwiazda Altair współtworzy Letni Trójkąt. Konstelacja leży na Drodze Mlecznej, dlatego obfituje w liczne gromady i mgławice, co czyni ją atrakcyjną dla obserwatorów letniego nieba."
+  },
+  {
+    "polish": "Pegaz",
+    "latin": "Pegasus",
+    "description": "Pegasus nawiązuje do skrzydlatego konia zrodzonego z krwi Meduzy. Po służbie u bogów został umieszczony na niebie. Konstelacja znana jest z Wielkiego Kwadratu, stanowiącego ważny punkt orientacyjny. Jesienią widoczna najlepiej, łączy się optycznie z Andromedą."
+  },
+  {
+    "polish": "Andromeda",
+    "latin": "Andromeda",
+    "description": "Andromeda, córka Cefeusza i Kasjopei, została według mitu przywiązana do skały jako ofiara dla potwora. Po uratowaniu przez Perseusza trafiła na niebo. Konstelacja zawiera Galaktykę Andromedy (M31), najbliższą dużą galaktykę spiralną, widoczną gołym okiem."
+  },
+  {
+    "polish": "Perseusz",
+    "latin": "Perseus",
+    "description": "Perseusz, bohater mitologii, który pokonał Meduzę i uratował Andromedę, został upamiętniony na niebie. Konstelacja zawiera słynną Podwójną Gromadę h+χ oraz związana jest z rojem meteorów Perseidów. Jej gwiazdy tworzą charakterystyczny wydłużony układ."
+  },
+  {
+    "polish": "Byk",
+    "latin": "Taurus",
+    "description": "Taurus wiąże się z mitem o Zeusie przemienionym w białego byka. Konstelacja zawiera jasnego Aldebarana oraz słynne gromady Hiady i Plejady. Jest jedną z najważniejszych zimowych konstelacji i odgrywa kluczową rolę w obserwacjach sezonowych."
+  },
+  {
+    "polish": "Orion",
+    "latin": "Orion",
+    "description": "Orion przedstawia legendarnego łowcę, którego Hera umieściła na niebie. Łatwo go rozpoznać dzięki trzem gwiazdom Pasa. Zawiera Mgławicę Oriona (M42), jedno z najjaśniejszych miejsc narodzin gwiazd. Jest dominującą konstelacją zimowego nieba."
+  },
+  {
+    "polish": "Bliźnięta",
+    "latin": "Gemini",
+    "description": "Gemini symbolizują Kastora i Polluksa, braci z mitologii greckiej. Zeus umieścił ich na niebie, by pozostali na zawsze razem. Konstelacja zawiera jasne gwiazdy Castor i Pollux i jest związana z aktywnym rojem meteorów Geminidów."
+  },
+  {
+    "polish": "Woźnica",
+    "latin": "Auriga",
+    "description": "Auriga bywa łączona z mitycznym wynalazcą rydwanu, Erichthoniosem. Konstelacja zawiera jasną Capellę i liczne gromady otwarte. Widoczna zimą nad Bykiem i Perseuszem, stanowi ważny element bogatych w obiekty obszarów Drogi Mlecznej."
+  },
+  {
+    "polish": "Rak",
+    "latin": "Cancer",
+    "description": "Cancer nawiązuje do kraba zesłanego przez Herę, by przeszkodził Heraklesowi podczas jednej z prac. Po pokonaniu zwierzę zostało umieszczone na niebie. Konstelacja zawiera gromadę M44, znaną jako Żłóbek. Najlepiej widoczna wiosną mimo słabych gwiazd."
+  },
+  {
+    "polish": "Lew",
+    "latin": "Leo",
+    "description": "Leo przedstawia lwa nemejskiego, pierwszego przeciwnika Heraklesa. Po jego pokonaniu Zeus umieścił zwierzę na niebie. Konstelacja ma charakterystyczny kształt sierpa, zawiera Regulusa oraz jest związana z rojem meteorów Leonidów."
+  },
+  {
+    "polish": "Wolarz",
+    "latin": "Bootes",
+    "description": "Bootes wywodzi swą nazwę od pasterza-pilota Wielkiego Wozu. W mitologii kojarzony bywa z Ikarionem, wynalazcą wina. Najjaśniejszy Arktur dominuje wiosenne niebo. Konstelacja bywa rozpoznawana jako oracz prowadzący woły po niebie."
+  },
+  {
+    "polish": "Korona Północna",
+    "latin": "Corona Borealis",
+    "description": "Corona Borealis to korona Ariadny, którą Dionizos poślubił i umieścił jej ozdobę na niebie. Charakterystyczny półkolisty układ gwiazd czyni ją łatwą do rozpoznania. Najlepiej widoczna wiosną i latem."
+  },
+  {
+    "polish": "Herkules",
+    "latin": "Hercules",
+    "description": "Konstelacja upamiętnia Heraklesa, najsłynniejszego greckiego herosa. Choć gwiazdy nie tworzą wyraźnej figury, obszar zawiera jedną z najjaśniejszych gromad kulistych – M13. Najlepiej obserwowalna latem w wysokich rejonach nieba."
+  },
+  {
+    "polish": "Ryś",
+    "latin": "Lynx",
+    "description": "Ryś nie ma powiązań z mitologią grecką – został stworzony przez Jana Heweliusza, który twierdził, że tak słabe gwiazdy zobaczy jedynie ktoś o „oczach rysia”. Konstelacja leży między Wielką Niedźwiedzicą a Bliźniętami."
+  },
+  {
+    "polish": "Żyrafa",
+    "latin": "Camelopardalis",
+    "description": "Nazwa pochodzi od greckiego określenia żyrafy – „camelopardalis”, czyli wielbłądo-pantera. Konstelacja jest rozległa, choć zbudowana z bardzo słabych gwiazd. Leży między Niedźwiedzicami a Perseuszem i zawiera kilka ciekawych mgławic."
+  },
+  {
+    "polish": "Jaszczurka",
+    "latin": "Lacerta",
+    "description": "Lacerta została nazwana przez Jana Heweliusza i nawiązuje do kształtu przypominającego jaszczurkę. Konstelacja leży na Drodze Mlecznej, dzięki czemu obfituje w obiekty głębokiego nieba. Najlepiej widoczna jesienią."
+  },
+  {
+    "polish": "Ryby",
+    "latin": "Pisces",
+    "description": "Pisces przedstawiają dwie ryby połączone wstęgą, zgodnie z mitem o Afrodycie i Erosie, którzy pod wodą chronili się przed Tyfonem. Konstelacja jest częścią zodiaku i widoczna jesienią, choć składa się ze słabych gwiazd."
+  },
+  {
+    "polish": "Strzała",
+    "latin": "Sagitta",
+    "description": "Sagitta oznacza strzałę Heraklesa lub Apolla – różne tradycje mitologiczne przypisują ją różnym bohaterom. Mimo małych rozmiarów jest jedną z najstarszych znanych konstelacji. Leży na Drodze Mlecznej między Orłem a Lutnią."
+  },
+  {
+    "polish": "Delfin",
+    "latin": "Delphinus",
+    "description": "Delphinus nawiązuje do mitu o delfinie, który pomógł połączyć Posejdona z Amfitrytą. W nagrodę został umieszczony na niebie. Charakterystyczny układ czterech gwiazd przypomina sylwetkę skaczącego delfina i najlepiej widoczny jest latem."
+  }
+]
