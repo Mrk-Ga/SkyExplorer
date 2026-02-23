@@ -1,0 +1,152 @@
+package com.example.skyexplorer.photoGallery
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import com.example.skyexplorer.PhotoEntity
+import com.example.skyexplorer.data.assetsConstellationFileName
+import com.example.skyexplorer.data.cancelInformationButton
+import com.example.skyexplorer.data.deleteInformationButton
+import com.example.skyexplorer.data.deletePhotoDialogTitle
+import com.example.skyexplorer.data.deletePhototDialogText
+import com.example.skyexplorer.ui.theme.StarBlue
+import com.example.skyexplorer.ui.theme.StarLightBlue
+import kotlinx.coroutines.launch
+
+@Composable
+fun PhotoPager(
+    photos: List<PhotoEntity>,
+    constellationName: String,
+    pagerState: PagerState,
+    onDeletePhoto: (PhotoEntity) ->Unit
+) {
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedPhoto by remember { mutableStateOf<PhotoEntity?>(null) }
+    val scope = rememberCoroutineScope()
+
+    //val pagerState = rememberPagerState(pageCount = { photos.size })
+
+
+
+    // Dialog potwierdzający usunięcie
+    if (showDialog && selectedPhoto != null) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                Text(
+                    deleteInformationButton,
+                    color = Color.Red,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                            onDeletePhoto(selectedPhoto!!)
+                            showDialog = false
+                        }
+                )
+            },
+            dismissButton = {
+                Text(
+                    cancelInformationButton,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable { showDialog = false },
+                    color = StarLightBlue
+                )
+            },
+            title = { Text(deletePhotoDialogTitle) },
+            text = { Text(deletePhototDialogText) }
+        )
+    }
+
+
+
+
+    if (photos.isEmpty()) {
+
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data("file:///android_asset/${assetsConstellationFileName}/${constellationName.replace(" ", "_")}.jpg")
+                .size(512)
+                .build(),
+            contentDescription = null,
+
+            modifier = Modifier
+                //clip(RoundedCornerShape(12.dp))
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .fillMaxWidth()
+                .height(300.dp),
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.Center
+        )
+
+        return
+    }
+
+    // Pager state
+
+
+    HorizontalPager(
+        state = pagerState,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp),
+        pageSpacing = 16.dp
+    ) { page ->
+
+        val photo = photos[page]
+
+
+            Image(
+                painter = rememberAsyncImagePainter(photo.uri),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onLongPress = {
+                                selectedPhoto = photo
+                                showDialog = true
+                            }
+                        )
+                    },
+                contentScale = ContentScale.Crop,
+            )
+
+
+
+
+    }
+}
+
+

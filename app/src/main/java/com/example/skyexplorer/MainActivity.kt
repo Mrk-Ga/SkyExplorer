@@ -1,8 +1,11 @@
 package com.example.skyexplorer
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -13,69 +16,39 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.skyexplorer.skymapscreen.SkyMapRepositoryImpl
+import com.example.skyexplorer.ui.theme.SkyExplorerTheme
+
 //import com.example.navigationdemo.ui.theme.NavigationDemoTheme
 
 class MainActivity : ComponentActivity() {
+    @androidx.annotation.RequiresPermission(allOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION])
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    //AppNavigation()
-                    val navController = rememberNavController()
-                    AppNavHost(navController)
-                }
 
+            setContent {
+                SkyExplorerTheme {
+                    //GradientBackground {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        )  {
+                            //AppNavigation()
+                            try {
+                                val list = assets.list("")?.toList()
+                                Log.d("ASSETS", "Zawartość assets: $list")
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+
+                            val navController = rememberNavController()
+                            val repository = SkyMapRepositoryImpl(application)
+                            AppNavHost(navController, repository)
+                        }
+                    //}
+
+            }
         }
     }
 }
-/*
-@Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
-
-    NavHost(
-        navController = navController,
-        startDestination = "home"
-    ) {
-        composable("home") { HomeScreen(navController) }
-        composable("second") { SecondScreen(navController) }
-    }
-}
-
-@Composable
-fun HomeScreen(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("To jest ekran główny", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = { navController.navigate("second") }) {
-            Text("Przejdź do drugiego ekranu")
-        }
-    }
-}
-
-@Composable
-fun SecondScreen(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("To jest drugi ekran", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Wróć")
-        }
-    }
-}
-*/

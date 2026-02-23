@@ -1,38 +1,78 @@
 package com.example.skyexplorer.constellations
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.skyexplorer.components.AppNavigationBar
 
 @Composable
 fun ConstellationsScreen(
     viewModel: ConstellationsViewModel,
-    onGoBack: () -> Unit
+    onNavigateToSkyMap: () -> Unit,
+    onNavigateToConstellations: () -> Unit,
+    onNavigateToCamera: () -> Unit,
+    onNavigateToPhotoGallery: (constellationName: String) -> Unit
 ){
-    val state by viewModel.state.collectAsState()
 
-    Text(text = "Constellations")
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Button(onClick = { onGoBack() })
-        {
-            Text("Powrót")
+
+    Scaffold(
+        contentWindowInsets = WindowInsets(0),
+        containerColor = Color.Transparent,//MaterialTheme.colorScheme.background,
+        bottomBar = {
+
+            AppNavigationBar(
+                onNavigateToCamera = onNavigateToCamera,
+                onNavigateToConstellations = onNavigateToConstellations,
+                onNavigateToSkyMap = onNavigateToSkyMap
+            )
+
+        }
+    ) { innerPadding ->
+
+        Box(
+            modifier = Modifier
+                .background(
+
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color(0xFF050814)
+                        )
+                    )
+                )
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+
+            ) {
+
+
+                //ConstellationItem()
+                ConstellationsList(
+                    viewModel, viewModel.loadConstellationsInfo(),
+                    onNavigateToPhotoGallery
+                )
+
+
+            }
         }
     }
 
+
 }
+
+

@@ -1,7 +1,12 @@
+import org.gradle.kotlin.dsl.androidTestImplementation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0" // lub taka sama wersja jak Kotlin
 }
 
 android {
@@ -39,6 +44,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -49,6 +55,18 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.compose.runtime.saved.instance.state)
+    implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.material3)
+    implementation(libs.core.ktx)
+    implementation(libs.androidx.junit.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -57,7 +75,72 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation(libs.androidx.compose.ui)
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation("androidx.compose.foundation:foundation")
+
+
+    implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+
+    // CameraX core
+    implementation("androidx.camera:camera-core:1.4.0")
+    implementation("androidx.camera:camera-camera2:1.4.0")
+    implementation("androidx.camera:camera-lifecycle:1.4.0")
+
+// Preview View
+    implementation("androidx.camera:camera-view:1.4.0")
+
+// Jetpack Compose interop
+    implementation("androidx.compose.ui:ui:1.7.0")
+    implementation("androidx.compose.foundation:foundation:1.7.0")
+
+// Permission handling (recommended)
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+
+
+    implementation(libs.androidx.room.ktx)
+    val roomVersion = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+
+    ksp("androidx.room:room-compiler:$roomVersion")
+
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
+
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation(kotlin("test"))
+
+    // Mockk for mocking in tests
+    testImplementation("io.mockk:mockk-android:1.13.11")
+
+    // Coroutines test
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+
+    // Instrumented tests – REQUIRED
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+
+    // Jeśli używasz coroutines
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // Room tests (jeśli testujesz repo)
+    androidTestImplementation("androidx.room:room-testing:2.6.1")
+
+
+
 }
